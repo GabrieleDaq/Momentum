@@ -1,133 +1,735 @@
 /* =========================================
    MOMENTUM
-   Habit Tracker v0.3
+   Habit Tracker v0.4
+   Habit Library + attiva/disattiva
 ========================================= */
 
 
 /* =========================================
-   HABIT DATABASE
+   MASTER HABIT LIBRARY
 ========================================= */
 
-const habits = [
+const habitLibrary = [
 
-    /* DAILY */
+    /* =========================
+       DAILY — ATTIVE DI DEFAULT
+    ========================= */
 
     {
         id: "sleep",
         frequency: "daily",
+        category: "Corpo & salute",
         name: "Sonno",
         icon: "😴",
         type: "number",
         target: 7,
         unit: "h",
-        description: "Obiettivo: 7–8 ore"
+        description: "Obiettivo: 7–8 ore",
+        defaultActive: true
     },
 
     {
         id: "steps",
         frequency: "daily",
+        category: "Corpo & salute",
         name: "Passi",
         icon: "🚶",
         type: "number",
         target: 8000,
         unit: "passi",
-        description: "Obiettivo: almeno 8.000"
+        description: "Obiettivo: almeno 8.000",
+        defaultActive: true
     },
 
     {
         id: "nutrition",
         frequency: "daily",
+        category: "Corpo & salute",
         name: "Alimentazione",
         icon: "🥗",
         type: "boolean",
-        description: "Giornata complessivamente equilibrata"
+        description: "Giornata complessivamente equilibrata",
+        defaultActive: true
     },
 
     {
         id: "supplements",
         frequency: "daily",
+        category: "Corpo & salute",
         name: "Integratori",
         icon: "💊",
         type: "boolean",
-        description: "Assunti quelli previsti oggi"
+        description: "Assunti quelli previsti oggi",
+        defaultActive: true
     },
 
     {
         id: "priorities",
         frequency: "daily",
+        category: "Mente & focus",
         name: "3 priorità",
         icon: "🎯",
         type: "boolean",
-        description: "Definisci le 3 priorità della giornata"
+        description: "Definisci le 3 priorità della giornata",
+        defaultActive: true
     },
 
     {
         id: "reading",
         frequency: "daily",
+        category: "Mente & focus",
         name: "Lettura / studio",
         icon: "📚",
         type: "number",
         target: 15,
         unit: "min",
-        description: "Obiettivo: 10–20 minuti"
+        description: "Obiettivo: 10–20 minuti",
+        defaultActive: true
     },
 
     {
         id: "tidy",
         frequency: "daily",
+        category: "Organizzazione",
         name: "Ordine",
         icon: "🧹",
         type: "number",
         target: 5,
         unit: "min",
-        description: "5–10 minuti di riordino"
+        description: "5–10 minuti di riordino",
+        defaultActive: true
     },
 
 
-    /* WEEKLY */
+    /* =========================
+       DAILY — LIBRERIA
+    ========================= */
+
+    {
+        id: "water",
+        frequency: "daily",
+        category: "Corpo & salute",
+        name: "Acqua",
+        icon: "💧",
+        type: "number",
+        target: 2,
+        unit: "L",
+        description: "Obiettivo indicativo: circa 1,5–2,5 L"
+    },
+
+    {
+        id: "movement",
+        frequency: "daily",
+        category: "Corpo & salute",
+        name: "Movimento",
+        icon: "🏃",
+        type: "boolean",
+        description: "Allenamento oppure 20–30 minuti di movimento"
+    },
+
+    {
+        id: "fruit_veg",
+        frequency: "daily",
+        category: "Corpo & salute",
+        name: "Frutta e verdura",
+        icon: "🍎",
+        type: "boolean",
+        description: "2 porzioni di verdura + 1–2 di frutta"
+    },
+
+    {
+        id: "protein",
+        frequency: "daily",
+        category: "Corpo & salute",
+        name: "Proteine ai pasti",
+        icon: "🍗",
+        type: "boolean",
+        description: "Buona quota proteica durante la giornata"
+    },
+
+    {
+        id: "regular_sleep",
+        frequency: "daily",
+        category: "Corpo & salute",
+        name: "Orari del sonno regolari",
+        icon: "⏰",
+        type: "boolean",
+        description: "Orari di sonno e risveglio abbastanza regolari"
+    },
+
+    {
+        id: "mobility",
+        frequency: "daily",
+        category: "Corpo & salute",
+        name: "Stretching / mobilità",
+        icon: "🤸",
+        type: "number",
+        target: 5,
+        unit: "min",
+        description: "Obiettivo: 5–10 minuti"
+    },
+
+    {
+        id: "no_phone_morning",
+        frequency: "daily",
+        category: "Mente & focus",
+        name: "No telefono al risveglio",
+        icon: "📵",
+        type: "boolean",
+        description: "Primi 20–30 minuti senza telefono"
+    },
+
+    {
+        id: "deep_work",
+        frequency: "daily",
+        category: "Mente & focus",
+        name: "Deep work",
+        icon: "🧠",
+        type: "number",
+        target: 45,
+        unit: "min",
+        description: "Almeno un blocco da 45–90 minuti"
+    },
+
+    {
+        id: "screen_time",
+        frequency: "daily",
+        category: "Mente & focus",
+        name: "Screen time social",
+        icon: "📱",
+        type: "limit",
+        target: 3,
+        unit: "h",
+        description: "Inserisci le ore: target massimo 3 h"
+    },
+
+    {
+        id: "learning",
+        frequency: "daily",
+        category: "Mente & focus",
+        name: "Imparare qualcosa",
+        icon: "🎓",
+        type: "number",
+        target: 15,
+        unit: "min",
+        description: "Almeno 15 minuti"
+    },
+
+    {
+        id: "capture_tasks",
+        frequency: "daily",
+        category: "Mente & focus",
+        name: "Annotare idee e task",
+        icon: "📝",
+        type: "boolean",
+        description: "Non tenere tutto a mente"
+    },
+
+    {
+        id: "me_time",
+        frequency: "daily",
+        category: "Benessere",
+        name: "Tempo per te",
+        icon: "🌿",
+        type: "number",
+        target: 20,
+        unit: "min",
+        description: "Almeno 20–30 minuti"
+    },
+
+    {
+        id: "screen_free",
+        frequency: "daily",
+        category: "Benessere",
+        name: "Tempo senza schermi",
+        icon: "☁️",
+        type: "number",
+        target: 20,
+        unit: "min",
+        description: "Un momento della giornata completamente offline"
+    },
+
+    {
+        id: "hobby",
+        frequency: "daily",
+        category: "Benessere",
+        name: "Hobby / qualcosa che piace",
+        icon: "🎮",
+        type: "boolean",
+        description: "Musica, serie, hobby, passeggiata, videogiochi..."
+    },
+
+    {
+        id: "important_person",
+        frequency: "daily",
+        category: "Benessere",
+        name: "Sentire una persona importante",
+        icon: "💬",
+        type: "boolean",
+        description: "Parla o scrivi a una persona importante"
+    },
+
+    {
+        id: "what_went_well",
+        frequency: "daily",
+        category: "Benessere",
+        name: "Cosa è andato bene?",
+        icon: "🌙",
+        type: "boolean",
+        description: "Una breve riflessione prima di dormire"
+    },
+
+    {
+        id: "make_bed",
+        frequency: "daily",
+        category: "Organizzazione",
+        name: "Rifare il letto",
+        icon: "🛏️",
+        type: "boolean",
+        description: "Piccolo reset della mattina"
+    },
+
+    {
+        id: "prepare_tomorrow",
+        frequency: "daily",
+        category: "Organizzazione",
+        name: "Preparare domani",
+        icon: "🎒",
+        type: "boolean",
+        description: "Prepara la sera ciò che servirà il giorno dopo"
+    },
+
+    {
+        id: "check_agenda",
+        frequency: "daily",
+        category: "Organizzazione",
+        name: "Controllare agenda",
+        icon: "📅",
+        type: "boolean",
+        description: "Controllo rapido degli impegni del giorno dopo"
+    },
+
+    {
+        id: "record_expenses",
+        frequency: "daily",
+        category: "Finanze",
+        name: "Registrare le spese",
+        icon: "💳",
+        type: "boolean",
+        description: "Registra le spese importanti della giornata"
+    },
+
+    {
+        id: "rule_24h",
+        frequency: "daily",
+        category: "Finanze",
+        name: "Regola delle 24 ore",
+        icon: "⏳",
+        type: "boolean",
+        description: "Niente acquisti impulsivi non necessari"
+    },
+
+
+    /* =========================
+       WEEKLY — ATTIVE DI DEFAULT
+    ========================= */
 
     {
         id: "workouts",
         frequency: "weekly",
+        category: "Corpo & salute",
         name: "Allenamenti",
         icon: "🏋️",
         type: "counter",
         target: 3,
         displayTarget: 4,
-        description: "Obiettivo: 3–4 allenamenti"
+        description: "Obiettivo: 3–4 allenamenti",
+        defaultActive: true
     },
 
     {
         id: "weekly_reset",
         frequency: "weekly",
+        category: "Organizzazione",
         name: "Weekly Reset",
         icon: "🗓️",
         type: "boolean",
-        description: "Review + calendario + obiettivi"
+        description: "Review + calendario + 3 obiettivi",
+        defaultActive: true
     },
 
 
-    /* MONTHLY */
+    /* =========================
+       WEEKLY — LIBRERIA
+    ========================= */
+
+    {
+        id: "weekly_cardio",
+        frequency: "weekly",
+        category: "Corpo & salute",
+        name: "Cardio / lunga camminata",
+        icon: "🏃",
+        type: "boolean",
+        description: "Almeno una sessione nella settimana"
+    },
+
+    {
+        id: "weight_check",
+        frequency: "weekly",
+        category: "Corpo & salute",
+        name: "Controllo peso",
+        icon: "⚖️",
+        type: "boolean",
+        description: "Una sola misurazione settimanale"
+    },
+
+    {
+        id: "meal_plan",
+        frequency: "weekly",
+        category: "Corpo & salute",
+        name: "Pianificare i pasti",
+        icon: "🍽️",
+        type: "boolean",
+        description: "Pianificazione indicativa della settimana"
+    },
+
+    {
+        id: "smart_grocery",
+        frequency: "weekly",
+        category: "Corpo & salute",
+        name: "Spesa ragionata",
+        icon: "🛒",
+        type: "boolean",
+        description: "Fare una spesa alimentare pianificata"
+    },
+
+    {
+        id: "deep_clean",
+        frequency: "weekly",
+        category: "Organizzazione",
+        name: "Pulizia approfondita",
+        icon: "🧽",
+        type: "boolean",
+        description: "Una pulizia più completa della casa"
+    },
+
+    {
+        id: "digital_cleanup",
+        frequency: "weekly",
+        category: "Organizzazione",
+        name: "Pulizia digitale",
+        icon: "🖥️",
+        type: "boolean",
+        description: "Desktop, download, email e file inutili"
+    },
+
+    {
+        id: "professional_growth",
+        frequency: "weekly",
+        category: "Crescita",
+        name: "Sviluppo professionale",
+        icon: "📈",
+        type: "number",
+        target: 1,
+        unit: "h",
+        description: "Obiettivo: 1–2 ore"
+    },
+
+    {
+        id: "sector_reading",
+        frequency: "weekly",
+        category: "Crescita",
+        name: "Lettura di settore",
+        icon: "📰",
+        type: "boolean",
+        description: "Leggi qualcosa relativo al tuo settore"
+    },
+
+    {
+        id: "skill_growth",
+        frequency: "weekly",
+        category: "Crescita",
+        name: "Migliorare una competenza",
+        icon: "🧩",
+        type: "boolean",
+        description: "Un passo concreto su una skill"
+    },
+
+    {
+        id: "news_update",
+        frequency: "weekly",
+        category: "Crescita",
+        name: "Aggiornamento notizie",
+        icon: "🌐",
+        type: "boolean",
+        description: "Economia, tecnologia o temi professionali"
+    },
+
+    {
+        id: "career_action",
+        frequency: "weekly",
+        category: "Crescita",
+        name: "Azione di crescita",
+        icon: "🚀",
+        type: "boolean",
+        description: "Networking, candidatura, CV, studio o progetto"
+    },
+
+    {
+        id: "weekly_spending",
+        frequency: "weekly",
+        category: "Finanze",
+        name: "Controllo spese",
+        icon: "💸",
+        type: "boolean",
+        description: "Guarda rapidamente quanto hai speso"
+    },
+
+    {
+        id: "budget_check",
+        frequency: "weekly",
+        category: "Finanze",
+        name: "Controllo budget",
+        icon: "📊",
+        type: "boolean",
+        description: "Verifica di non superare il budget"
+    },
+
+    {
+        id: "social_activity",
+        frequency: "weekly",
+        category: "Vita sociale",
+        name: "Attività con amici/famiglia",
+        icon: "👥",
+        type: "boolean",
+        description: "Organizza almeno un'attività"
+    },
+
+    {
+        id: "new_activity",
+        frequency: "weekly",
+        category: "Vita sociale",
+        name: "Qualcosa di diverso",
+        icon: "✨",
+        type: "boolean",
+        description: "Esci dalla solita routine"
+    },
+
+    {
+        id: "disconnect_work",
+        frequency: "weekly",
+        category: "Vita sociale",
+        name: "Tempo scollegato dal lavoro",
+        icon: "🌅",
+        type: "boolean",
+        description: "Qualche ora completamente staccato dal lavoro"
+    },
+
+
+    /* =========================
+       MONTHLY — ATTIVE DI DEFAULT
+    ========================= */
 
     {
         id: "money_review",
         frequency: "monthly",
+        category: "Finanze",
         name: "Money Review",
         icon: "💰",
         type: "boolean",
-        description: "Spese, risparmio, investimenti e abbonamenti"
+        description: "Entrate, spese, risparmio, investimenti e abbonamenti",
+        defaultActive: true
     },
 
     {
         id: "monthly_reset",
         frequency: "monthly",
+        category: "Organizzazione",
         name: "Monthly Reset",
         icon: "🧭",
         type: "boolean",
-        description: "Salute, obiettivi e vita personale"
+        description: "Cosa ha funzionato + 1–3 obiettivi per il prossimo mese",
+        defaultActive: true
+    },
+
+
+    /* =========================
+       MONTHLY — LIBRERIA
+    ========================= */
+
+    {
+        id: "fitness_review",
+        frequency: "monthly",
+        category: "Corpo & salute",
+        name: "Progressi fitness",
+        icon: "📏",
+        type: "boolean",
+        description: "Peso, misure e progressi in palestra"
+    },
+
+    {
+        id: "progress_photos",
+        frequency: "monthly",
+        category: "Corpo & salute",
+        name: "Foto progress",
+        icon: "📸",
+        type: "boolean",
+        description: "Foto opzionali per confrontare i progressi"
+    },
+
+    {
+        id: "sleep_review",
+        frequency: "monthly",
+        category: "Corpo & salute",
+        name: "Qualità del sonno",
+        icon: "🌙",
+        type: "boolean",
+        description: "Controlla la qualità media del sonno"
+    },
+
+    {
+        id: "energy_stress",
+        frequency: "monthly",
+        category: "Corpo & salute",
+        name: "Energia e stress",
+        icon: "🔋",
+        type: "boolean",
+        description: "Valuta se stanno migliorando o peggiorando"
+    },
+
+    {
+        id: "learning_review",
+        frequency: "monthly",
+        category: "Crescita",
+        name: "Cosa ho imparato",
+        icon: "🎓",
+        type: "boolean",
+        description: "Valuta gli apprendimenti del mese"
+    },
+
+    {
+        id: "profile_update",
+        frequency: "monthly",
+        category: "Crescita",
+        name: "Aggiornare profilo professionale",
+        icon: "🧾",
+        type: "boolean",
+        description: "Solo se ci sono nuovi risultati rilevanti"
+    },
+
+    {
+        id: "next_skill",
+        frequency: "monthly",
+        category: "Crescita",
+        name: "Skill del prossimo mese",
+        icon: "🎯",
+        type: "boolean",
+        description: "Scegli una competenza da sviluppare"
+    },
+
+    {
+        id: "monthly_digital_cleanup",
+        frequency: "monthly",
+        category: "Organizzazione",
+        name: "Decluttering digitale",
+        icon: "🗂️",
+        type: "boolean",
+        description: "File, screenshot, foto, note e cartelle"
+    },
+
+    {
+        id: "backup_files",
+        frequency: "monthly",
+        category: "Organizzazione",
+        name: "Backup file importanti",
+        icon: "☁️",
+        type: "boolean",
+        description: "Verifica che i file importanti siano al sicuro"
+    },
+
+    {
+        id: "newsletter_cleanup",
+        frequency: "monthly",
+        category: "Organizzazione",
+        name: "Pulizia newsletter",
+        icon: "📧",
+        type: "boolean",
+        description: "Disiscriviti da newsletter inutili"
+    },
+
+    {
+        id: "subscription_check",
+        frequency: "monthly",
+        category: "Finanze",
+        name: "Controllo abbonamenti",
+        icon: "🔁",
+        type: "boolean",
+        description: "Controlla spese ricorrenti e abbonamenti digitali"
+    },
+
+    {
+        id: "new_experience_monthly",
+        frequency: "monthly",
+        category: "Vita personale",
+        name: "Esperienza diversa",
+        icon: "🗺️",
+        type: "boolean",
+        description: "Fai almeno qualcosa fuori dalla routine"
+    },
+
+    {
+        id: "plan_future_event",
+        frequency: "monthly",
+        category: "Vita personale",
+        name: "Organizzare qualcosa",
+        icon: "🎫",
+        type: "boolean",
+        description: "Pianifica una giornata, gita o evento futuro"
+    },
+
+    {
+        id: "reconnect",
+        frequency: "monthly",
+        category: "Vita personale",
+        name: "Ricontattare qualcuno",
+        icon: "☎️",
+        type: "boolean",
+        description: "Contatta una persona che non senti da tempo"
+    },
+
+    {
+        id: "fun_only",
+        frequency: "monthly",
+        category: "Vita personale",
+        name: "Divertimento senza obiettivi",
+        icon: "🎉",
+        type: "boolean",
+        description: "Fai qualcosa solo perché ti diverte"
     }
 
 ];
+
+
+
+/* =========================================
+   DEFAULT ACTIVE HABITS
+========================================= */
+
+const DEFAULT_ACTIVE_IDS =
+    habitLibrary
+        .filter(habit => habit.defaultActive)
+        .map(habit => habit.id);
+
+
+const DEFAULT_DAILY_ACTIVE_IDS =
+    habitLibrary
+        .filter(
+            habit =>
+                habit.defaultActive &&
+                habit.frequency === "daily"
+        )
+        .map(habit => habit.id);
+
 
 
 /* =========================================
@@ -139,15 +741,18 @@ const now = new Date();
 
 function formatDateKey(date) {
 
-    const year = date.getFullYear();
+    const year =
+        date.getFullYear();
 
     const month =
-        String(date.getMonth() + 1)
-            .padStart(2, "0");
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
     const day =
-        String(date.getDate())
-            .padStart(2, "0");
+        String(
+            date.getDate()
+        ).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
 }
@@ -155,14 +760,18 @@ function formatDateKey(date) {
 
 function parseDateKey(key) {
 
-    const parts =
-        key.split("-")
-            .map(Number);
+    const [
+        year,
+        month,
+        day
+    ] = key
+        .split("-")
+        .map(Number);
 
     return new Date(
-        parts[0],
-        parts[1] - 1,
-        parts[2]
+        year,
+        month - 1,
+        day
     );
 }
 
@@ -182,7 +791,9 @@ function getWeekKey(date) {
             : copy.getDay();
 
     copy.setDate(
-        copy.getDate() - day + 1
+        copy.getDate() -
+        day +
+        1
     );
 
     return formatDateKey(copy);
@@ -191,14 +802,9 @@ function getWeekKey(date) {
 
 function getMonthKey(date) {
 
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(date.getMonth() + 1)
-            .padStart(2, "0");
-
-    return `${year}-${month}`;
+    return `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+    ).padStart(2, "0")}`;
 }
 
 
@@ -212,15 +818,17 @@ const monthKey =
     getMonthKey(now);
 
 
+
 /* =========================================
-   STORAGE
+   STORAGE + MIGRAZIONE v0.3 -> v0.4
 ========================================= */
 
 /*
-IMPORTANTE:
-manteniamo momentum_v02
-così i dati della versione precedente
-rimangono compatibili.
+Manteniamo lo stesso STORAGE_KEY
+della versione precedente.
+
+In questo modo NON perdiamo
+i progressi già registrati.
 */
 
 const STORAGE_KEY =
@@ -228,6 +836,7 @@ const STORAGE_KEY =
 
 
 let data;
+
 
 try {
 
@@ -251,7 +860,8 @@ if (!data) {
     data = {
         daily: {},
         weekly: {},
-        monthly: {}
+        monthly: {},
+        settings: {}
     };
 
 }
@@ -261,26 +871,156 @@ if (!data.daily) {
     data.daily = {};
 }
 
+
 if (!data.weekly) {
     data.weekly = {};
 }
+
 
 if (!data.monthly) {
     data.monthly = {};
 }
 
 
-if (!data.daily[todayKey]) {
-    data.daily[todayKey] = {};
+if (!data.settings) {
+    data.settings = {};
 }
+
+
+/*
+Se è la prima volta che usiamo
+la v0.4, attiviamo automaticamente
+le 11 abitudini che avevamo già.
+*/
+
+if (
+    !Array.isArray(
+        data.settings.activeHabitIds
+    )
+) {
+
+    data.settings.activeHabitIds =
+        [...DEFAULT_ACTIVE_IDS];
+
+}
+
+
+/*
+Salviamo quali habit erano attive
+nei giorni precedenti.
+
+Questo evita che cambiare habit oggi
+modifichi artificialmente gli score
+dei giorni vecchi.
+*/
+
+Object
+    .keys(data.daily)
+    .forEach(
+        dateKey => {
+
+            if (
+                !Array.isArray(
+                    data.daily[dateKey]
+                        .__activeIds
+                )
+            ) {
+
+                data.daily[dateKey]
+                    .__activeIds =
+                    [
+                        ...DEFAULT_DAILY_ACTIVE_IDS
+                    ];
+
+            }
+
+        }
+    );
+
+
+function getActiveHabitIds() {
+
+    return data
+        .settings
+        .activeHabitIds;
+
+}
+
+
+function getActiveHabits() {
+
+    const activeIds =
+        new Set(
+            getActiveHabitIds()
+        );
+
+    return habitLibrary.filter(
+        habit =>
+            activeIds.has(
+                habit.id
+            )
+    );
+
+}
+
+
+function activeHabitsByFrequency(
+    frequency
+) {
+
+    return getActiveHabits()
+        .filter(
+            habit =>
+                habit.frequency ===
+                frequency
+        );
+
+}
+
+
+function activeDailyIds() {
+
+    return activeHabitsByFrequency(
+        "daily"
+    )
+        .map(
+            habit =>
+                habit.id
+        );
+
+}
+
+
+/* Creazione contenitori correnti */
+
+if (!data.daily[todayKey]) {
+
+    data.daily[todayKey] = {};
+
+}
+
 
 if (!data.weekly[weekKey]) {
+
     data.weekly[weekKey] = {};
+
 }
 
+
 if (!data.monthly[monthKey]) {
+
     data.monthly[monthKey] = {};
+
 }
+
+
+/*
+Il giorno corrente usa
+le habit attualmente attive.
+*/
+
+data.daily[todayKey].__activeIds =
+    activeDailyIds();
 
 
 function saveData() {
@@ -289,49 +1029,85 @@ function saveData() {
         STORAGE_KEY,
         JSON.stringify(data)
     );
+
 }
+
 
 
 /* =========================================
    HABIT HELPERS
 ========================================= */
 
-function getStorageSection(frequency) {
+function getHabitById(id) {
 
-    if (frequency === "daily") {
+    return habitLibrary.find(
+        habit =>
+            habit.id === id
+    );
 
-        return data.daily[todayKey];
-
-    }
-
-
-    if (frequency === "weekly") {
-
-        return data.weekly[weekKey];
-
-    }
-
-
-    return data.monthly[monthKey];
 }
 
 
-function defaultValueForHabit(habit) {
+function getStorageSection(
+    frequency
+) {
 
     if (
-        habit.type === "number" ||
-        habit.type === "counter"
+        frequency === "daily"
+    ) {
+
+        return data.daily[
+            todayKey
+        ];
+
+    }
+
+
+    if (
+        frequency === "weekly"
+    ) {
+
+        return data.weekly[
+            weekKey
+        ];
+
+    }
+
+
+    return data.monthly[
+        monthKey
+    ];
+
+}
+
+
+function defaultValueForHabit(
+    habit
+) {
+
+    if (
+        [
+            "number",
+            "counter",
+            "limit"
+        ].includes(
+            habit.type
+        )
     ) {
 
         return 0;
 
     }
 
+
     return false;
+
 }
 
 
-function getHabitValue(habit) {
+function getHabitValue(
+    habit
+) {
 
     const section =
         getStorageSection(
@@ -340,7 +1116,8 @@ function getHabitValue(habit) {
 
 
     if (
-        section[habit.id] === undefined
+        section[habit.id] ===
+        undefined
     ) {
 
         return defaultValueForHabit(
@@ -350,7 +1127,10 @@ function getHabitValue(habit) {
     }
 
 
-    return section[habit.id];
+    return section[
+        habit.id
+    ];
+
 }
 
 
@@ -364,14 +1144,17 @@ function setHabitValue(
             habit.frequency
         );
 
+
     section[habit.id] =
         value;
+
 
     saveData();
 
     updateScores();
 
     renderStats();
+
 }
 
 
@@ -380,52 +1163,163 @@ function isCompletedFromValue(
     value
 ) {
 
-    if (habit.type === "boolean") {
+    if (
+        habit.type ===
+        "boolean"
+    ) {
 
         return value === true;
 
     }
 
 
+    /*
+    LIMIT:
+    esempio Screen Time.
+
+    È completato se il valore
+    è > 0 ed è sotto il massimo.
+    */
+
     if (
-        habit.type === "number" ||
-        habit.type === "counter"
+        habit.type ===
+        "limit"
     ) {
 
-        return Number(value) >=
-            habit.target;
+        return (
+            Number(value) > 0 &&
+            Number(value) <=
+                habit.target
+        );
+
+    }
+
+
+    if (
+        [
+            "number",
+            "counter"
+        ].includes(
+            habit.type
+        )
+    ) {
+
+        return (
+            Number(value) >=
+            habit.target
+        );
 
     }
 
 
     return false;
+
 }
 
 
-function isHabitCompleted(habit) {
+function isHabitCompleted(
+    habit
+) {
 
     return isCompletedFromValue(
         habit,
         getHabitValue(habit)
     );
+
 }
+
+
+
+/* =========================================
+   ATTIVA / DISATTIVA HABIT
+========================================= */
+
+function toggleHabitActive(
+    habitId
+) {
+
+    const activeIds =
+        new Set(
+            getActiveHabitIds()
+        );
+
+
+    if (
+        activeIds.has(
+            habitId
+        )
+    ) {
+
+        activeIds.delete(
+            habitId
+        );
+
+    }
+    else {
+
+        activeIds.add(
+            habitId
+        );
+
+    }
+
+
+    data.settings.activeHabitIds =
+        [...activeIds];
+
+
+    /*
+    Aggiorniamo le habit attive
+    per la giornata corrente.
+    */
+
+    data.daily[todayKey]
+        .__activeIds =
+        activeDailyIds();
+
+
+    saveData();
+
+
+    /*
+    Ridisegniamo l'app.
+    */
+
+    renderTodayHabits();
+
+    renderHabitLibrary();
+
+    updateScores();
+
+    renderCalendar();
+
+    renderStats();
+
+}
+
 
 
 /* =========================================
    TODAY HABIT CARDS
 ========================================= */
 
-function createHabitCard(habit) {
+function createHabitCard(
+    habit
+) {
 
     const card =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     card.className =
         "habit-card";
 
 
     const icon =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     icon.className =
         "habit-icon";
@@ -435,14 +1329,18 @@ function createHabitCard(habit) {
 
 
     const info =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     info.className =
         "habit-info";
 
 
     const name =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     name.className =
         "habit-name";
@@ -452,7 +1350,9 @@ function createHabitCard(habit) {
 
 
     const description =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     description.className =
         "habit-description";
@@ -461,22 +1361,33 @@ function createHabitCard(habit) {
         habit.description;
 
 
-    info.appendChild(name);
+    info.appendChild(
+        name
+    );
 
     info.appendChild(
         description
     );
 
 
-    card.appendChild(icon);
+    card.appendChild(
+        icon
+    );
 
-    card.appendChild(info);
+    card.appendChild(
+        info
+    );
 
 
 
-    /* BOOLEAN */
+    /* =========================
+       BOOLEAN
+    ========================= */
 
-    if (habit.type === "boolean") {
+    if (
+        habit.type ===
+        "boolean"
+    ) {
 
         const button =
             document.createElement(
@@ -500,15 +1411,18 @@ function createHabitCard(habit) {
                     habit
                 );
 
+
             button.classList.toggle(
                 "completed",
                 completed
             );
 
+
             card.classList.toggle(
                 "completed",
                 completed
             );
+
         }
 
 
@@ -516,19 +1430,18 @@ function createHabitCard(habit) {
             "click",
             () => {
 
-                const current =
-                    getHabitValue(
-                        habit
-                    );
-
                 setHabitValue(
                     habit,
-                    !current
+                    !getHabitValue(
+                        habit
+                    )
                 );
+
 
                 refresh();
 
                 renderCalendar();
+
             }
         );
 
@@ -537,14 +1450,21 @@ function createHabitCard(habit) {
             button
         );
 
+
         refresh();
+
     }
 
 
 
-    /* NUMBER */
+    /* =========================
+       NUMBER / LIMIT
+    ========================= */
 
-    if (habit.type === "number") {
+    if (
+        habit.type === "number" ||
+        habit.type === "limit"
+    ) {
 
         const control =
             document.createElement(
@@ -560,19 +1480,36 @@ function createHabitCard(habit) {
                 "input"
             );
 
+
         input.type =
             "number";
+
 
         input.min =
             "0";
 
+
+        /*
+        Alcuni valori possono
+        avere decimali.
+        */
+
         input.step =
-            habit.id === "sleep"
+            [
+                "sleep",
+                "water",
+                "screen_time",
+                "professional_growth"
+            ].includes(
+                habit.id
+            )
                 ? "0.5"
                 : "1";
 
+
         input.className =
             "number-input";
+
 
         input.value =
             getHabitValue(
@@ -600,6 +1537,7 @@ function createHabitCard(habit) {
                     habit
                 )
             );
+
         }
 
 
@@ -612,8 +1550,11 @@ function createHabitCard(habit) {
                         input.value
                     );
 
+
                 if (
-                    !Number.isFinite(value) ||
+                    !Number.isFinite(
+                        value
+                    ) ||
                     value < 0
                 ) {
 
@@ -627,9 +1568,11 @@ function createHabitCard(habit) {
                     value
                 );
 
+
                 refresh();
 
                 renderCalendar();
+
             }
         );
 
@@ -642,18 +1585,26 @@ function createHabitCard(habit) {
             unit
         );
 
+
         card.appendChild(
             control
         );
 
+
         refresh();
+
     }
 
 
 
-    /* COUNTER */
+    /* =========================
+       COUNTER
+    ========================= */
 
-    if (habit.type === "counter") {
+    if (
+        habit.type ===
+        "counter"
+    ) {
 
         const control =
             document.createElement(
@@ -712,11 +1663,13 @@ function createHabitCard(habit) {
                     )
                 );
 
+
             value.textContent =
                 `${current} / ${
                     habit.displayTarget ||
                     habit.target
                 }`;
+
 
             card.classList.toggle(
                 "completed",
@@ -724,6 +1677,7 @@ function createHabitCard(habit) {
                     habit
                 )
             );
+
         }
 
 
@@ -731,25 +1685,25 @@ function createHabitCard(habit) {
             "click",
             () => {
 
-                const current =
-                    Number(
-                        getHabitValue(
-                            habit
-                        )
-                    );
-
                 const next =
                     Math.max(
                         0,
-                        current - 1
+                        Number(
+                            getHabitValue(
+                                habit
+                            )
+                        ) - 1
                     );
+
 
                 setHabitValue(
                     habit,
                     next
                 );
 
+
                 refresh();
+
             }
         );
 
@@ -758,25 +1712,25 @@ function createHabitCard(habit) {
             "click",
             () => {
 
-                const current =
-                    Number(
-                        getHabitValue(
-                            habit
-                        )
-                    );
-
                 const next =
                     Math.min(
-                        7,
-                        current + 1
+                        31,
+                        Number(
+                            getHabitValue(
+                                habit
+                            )
+                        ) + 1
                     );
+
 
                 setHabitValue(
                     habit,
                     next
                 );
 
+
                 refresh();
+
             }
         );
 
@@ -793,16 +1747,21 @@ function createHabitCard(habit) {
             plus
         );
 
+
         card.appendChild(
             control
         );
 
+
         refresh();
+
     }
 
 
     return card;
+
 }
+
 
 
 /* =========================================
@@ -816,10 +1775,12 @@ function renderTodayHabits() {
             "daily-list"
         );
 
+
     const weeklyList =
         document.getElementById(
             "weekly-list"
         );
+
 
     const monthlyList =
         document.getElementById(
@@ -827,55 +1788,66 @@ function renderTodayHabits() {
         );
 
 
-    dailyList.innerHTML = "";
-    weeklyList.innerHTML = "";
-    monthlyList.innerHTML = "";
+    dailyList.innerHTML =
+        "";
+
+    weeklyList.innerHTML =
+        "";
+
+    monthlyList.innerHTML =
+        "";
 
 
-    habits.forEach(
-        habit => {
+    getActiveHabits()
+        .forEach(
+            habit => {
 
-            const card =
-                createHabitCard(
-                    habit
-                );
+                const card =
+                    createHabitCard(
+                        habit
+                    );
 
 
-            if (
-                habit.frequency ===
-                "daily"
-            ) {
+                if (
+                    habit.frequency ===
+                    "daily"
+                ) {
 
-                dailyList.appendChild(
-                    card
-                );
+                    dailyList.appendChild(
+                        card
+                    );
+
+                }
+
+
+                if (
+                    habit.frequency ===
+                    "weekly"
+                ) {
+
+                    weeklyList.appendChild(
+                        card
+                    );
+
+                }
+
+
+                if (
+                    habit.frequency ===
+                    "monthly"
+                ) {
+
+                    monthlyList.appendChild(
+                        card
+                    );
+
+                }
+
             }
+        );
 
-
-            if (
-                habit.frequency ===
-                "weekly"
-            ) {
-
-                weeklyList.appendChild(
-                    card
-                );
-            }
-
-
-            if (
-                habit.frequency ===
-                "monthly"
-            ) {
-
-                monthlyList.appendChild(
-                    card
-                );
-            }
-
-        }
-    );
 }
+
 
 
 /* =========================================
@@ -887,10 +1859,8 @@ function calculateScore(
 ) {
 
     const filtered =
-        habits.filter(
-            habit =>
-                habit.frequency ===
-                frequency
+        activeHabitsByFrequency(
+            frequency
         );
 
 
@@ -904,9 +1874,10 @@ function calculateScore(
         filtered.length === 0
             ? 0
             : Math.round(
-                completed /
-                filtered.length *
-                100
+                (
+                    completed /
+                    filtered.length
+                ) * 100
             );
 
 
@@ -916,7 +1887,9 @@ function calculateScore(
             filtered.length,
         percentage
     };
+
 }
+
 
 
 function updateScores() {
@@ -926,10 +1899,12 @@ function updateScores() {
             "daily"
         );
 
+
     const weekly =
         calculateScore(
             "weekly"
         );
+
 
     const monthly =
         calculateScore(
@@ -984,7 +1959,17 @@ function updateScores() {
 
 
     if (
-        daily.percentage === 100
+        daily.total === 0
+    ) {
+
+        message.textContent =
+            "Attiva una daily habit.";
+
+    }
+
+    else if (
+        daily.percentage ===
+        100
     ) {
 
         message.textContent =
@@ -993,7 +1978,8 @@ function updateScores() {
     }
 
     else if (
-        daily.percentage >= 70
+        daily.percentage >=
+        70
     ) {
 
         message.textContent =
@@ -1002,7 +1988,8 @@ function updateScores() {
     }
 
     else if (
-        daily.percentage >= 40
+        daily.percentage >=
+        40
     ) {
 
         message.textContent =
@@ -1011,7 +1998,8 @@ function updateScores() {
     }
 
     else if (
-        daily.percentage > 0
+        daily.percentage >
+        0
     ) {
 
         message.textContent =
@@ -1023,32 +2011,52 @@ function updateScores() {
 
         message.textContent =
             "Iniziamo.";
+
     }
+
 }
+
 
 
 /* =========================================
    HISTORICAL DAILY SCORE
 ========================================= */
 
-const dailyHabits =
-    habits.filter(
-        habit =>
-            habit.frequency ===
-            "daily"
-    );
-
-
-function hasTrackedData(dateKey) {
+function hasTrackedData(
+    dateKey
+) {
 
     const dayData =
-        data.daily[dateKey];
+        data.daily[
+            dateKey
+        ];
 
-    return Boolean(
-        dayData &&
-        Object.keys(dayData).length > 0
-    );
+
+    if (!dayData) {
+
+        return false;
+
+    }
+
+
+    /*
+    __activeIds è configurazione,
+    non è un dato registrato.
+    */
+
+    return Object
+        .keys(
+            dayData
+        )
+        .some(
+            key =>
+                !key.startsWith(
+                    "__"
+                )
+        );
+
 }
+
 
 
 function getHistoricalHabitValue(
@@ -1057,7 +2065,10 @@ function getHistoricalHabitValue(
 ) {
 
     const dayData =
-        data.daily[dateKey] || {};
+        data.daily[
+            dateKey
+        ] || {};
+
 
     if (
         dayData[habit.id] ===
@@ -1067,10 +2078,51 @@ function getHistoricalHabitValue(
         return defaultValueForHabit(
             habit
         );
+
     }
 
-    return dayData[habit.id];
+
+    return dayData[
+        habit.id
+    ];
+
 }
+
+
+
+function historicalDailyHabits(
+    dateKey
+) {
+
+    const dayData =
+        data.daily[
+            dateKey
+        ] || {};
+
+
+    const ids =
+        Array.isArray(
+            dayData.__activeIds
+        )
+            ? dayData.__activeIds
+            : DEFAULT_DAILY_ACTIVE_IDS;
+
+
+    return ids
+        .map(
+            getHabitById
+        )
+        .filter(
+            Boolean
+        )
+        .filter(
+            habit =>
+                habit.frequency ===
+                "daily"
+        );
+
+}
+
 
 
 function calculateDailyScoreForKey(
@@ -1084,11 +2136,28 @@ function calculateDailyScoreForKey(
     ) {
 
         return null;
+
+    }
+
+
+    const habitsForDay =
+        historicalDailyHabits(
+            dateKey
+        );
+
+
+    if (
+        habitsForDay.length ===
+        0
+    ) {
+
+        return 0;
+
     }
 
 
     const completed =
-        dailyHabits.filter(
+        habitsForDay.filter(
             habit => {
 
                 const value =
@@ -1097,20 +2166,25 @@ function calculateDailyScoreForKey(
                         dateKey
                     );
 
+
                 return isCompletedFromValue(
                     habit,
                     value
                 );
+
             }
         ).length;
 
 
     return Math.round(
-        completed /
-        dailyHabits.length *
-        100
+        (
+            completed /
+            habitsForDay.length
+        ) * 100
     );
+
 }
+
 
 
 /* =========================================
@@ -1122,25 +2196,30 @@ const pages =
         ".page"
     );
 
+
 const navButtons =
     document.querySelectorAll(
         ".nav-button"
     );
+
 
 const pageTitle =
     document.getElementById(
         "page-title"
     );
 
+
 const pageSubtitle =
     document.getElementById(
         "page-subtitle"
     );
 
+
 const headerScore =
     document.getElementById(
         "header-score"
     );
+
 
 
 function todayLabel() {
@@ -1153,10 +2232,14 @@ function todayLabel() {
             month: "long"
         }
     );
+
 }
 
 
-function showPage(pageName) {
+
+function showPage(
+    pageName
+) {
 
     pages.forEach(
         page => {
@@ -1184,7 +2267,12 @@ function showPage(pageName) {
     );
 
 
-    if (pageName === "today") {
+    /* TODAY */
+
+    if (
+        pageName ===
+        "today"
+    ) {
 
         pageTitle.textContent =
             "Oggi";
@@ -1198,7 +2286,12 @@ function showPage(pageName) {
     }
 
 
-    if (pageName === "calendar") {
+    /* CALENDAR */
+
+    if (
+        pageName ===
+        "calendar"
+    ) {
 
         pageTitle.textContent =
             "Calendario";
@@ -1210,25 +2303,37 @@ function showPage(pageName) {
             true;
 
         renderCalendar();
+
     }
 
 
-    if (pageName === "habits") {
+    /* HABITS */
+
+    if (
+        pageName ===
+        "habits"
+    ) {
 
         pageTitle.textContent =
             "Habits";
 
         pageSubtitle.textContent =
-            `${habits.length} abitudini attive`;
+            `${getActiveHabits().length} attive • ${habitLibrary.length} disponibili`;
 
         headerScore.hidden =
             true;
 
         renderHabitLibrary();
+
     }
 
 
-    if (pageName === "stats") {
+    /* STATS */
+
+    if (
+        pageName ===
+        "stats"
+    ) {
 
         pageTitle.textContent =
             "Stats";
@@ -1240,6 +2345,7 @@ function showPage(pageName) {
             true;
 
         renderStats();
+
     }
 
 
@@ -1247,7 +2353,9 @@ function showPage(pageName) {
         top: 0,
         behavior: "smooth"
     });
+
 }
+
 
 
 navButtons.forEach(
@@ -1260,11 +2368,13 @@ navButtons.forEach(
                 showPage(
                     button.dataset.page
                 );
+
             }
         );
 
     }
 );
+
 
 
 /* =========================================
@@ -1288,10 +2398,12 @@ const calendarDays =
         "calendar-days"
     );
 
+
 const calendarMonthTitle =
     document.getElementById(
         "calendar-month-title"
     );
+
 
 
 function renderCalendar() {
@@ -1303,6 +2415,7 @@ function renderCalendar() {
     const year =
         calendarCursor
             .getFullYear();
+
 
     const month =
         calendarCursor
@@ -1344,6 +2457,11 @@ function renderCalendar() {
         .getDate();
 
 
+    /*
+    Celle vuote prima del
+    primo giorno del mese.
+    */
+
     for (
         let i = 0;
         i < mondayOffset;
@@ -1355,14 +2473,21 @@ function renderCalendar() {
                 "div"
             );
 
+
         blank.className =
             "calendar-blank";
+
 
         calendarDays.appendChild(
             blank
         );
+
     }
 
+
+    /*
+    Giorni del mese.
+    */
 
     for (
         let day = 1;
@@ -1377,6 +2502,7 @@ function renderCalendar() {
                 day
             );
 
+
         const dateKey =
             formatDateKey(
                 date
@@ -1388,8 +2514,10 @@ function renderCalendar() {
                 "button"
             );
 
+
         button.type =
             "button";
+
 
         button.className =
             "calendar-day";
@@ -1400,8 +2528,10 @@ function renderCalendar() {
                 "span"
             );
 
+
         dayNumber.className =
             "calendar-day-number";
+
 
         dayNumber.textContent =
             day;
@@ -1411,6 +2541,7 @@ function renderCalendar() {
             document.createElement(
                 "span"
             );
+
 
         scoreLabel.className =
             "calendar-day-score";
@@ -1422,17 +2553,22 @@ function renderCalendar() {
             );
 
 
-        if (score !== null) {
+        if (
+            score !== null
+        ) {
 
             button.classList.add(
                 "has-data"
             );
 
+
             scoreLabel.textContent =
                 `${score}%`;
 
 
-            if (score >= 100) {
+            if (
+                score >= 100
+            ) {
 
                 button.classList.add(
                     "perfect"
@@ -1440,7 +2576,9 @@ function renderCalendar() {
 
             }
 
-            else if (score >= 80) {
+            else if (
+                score >= 80
+            ) {
 
                 button.classList.add(
                     "great"
@@ -1448,22 +2586,28 @@ function renderCalendar() {
 
             }
 
-            else if (score >= 50) {
+            else if (
+                score >= 50
+            ) {
 
                 button.classList.add(
                     "good"
                 );
+
             }
+
         }
 
 
         if (
-            dateKey === todayKey
+            dateKey ===
+            todayKey
         ) {
 
             button.classList.add(
                 "today"
             );
+
         }
 
 
@@ -1475,12 +2619,14 @@ function renderCalendar() {
             button.classList.add(
                 "selected"
             );
+
         }
 
 
         button.appendChild(
             dayNumber
         );
+
 
         button.appendChild(
             scoreLabel
@@ -1494,9 +2640,11 @@ function renderCalendar() {
                 selectedCalendarKey =
                     dateKey;
 
+
                 renderCalendar();
 
                 renderSelectedDate();
+
             }
         );
 
@@ -1504,11 +2652,14 @@ function renderCalendar() {
         calendarDays.appendChild(
             button
         );
+
     }
 
 
     renderSelectedDate();
+
 }
+
 
 
 function moveCalendarMonth(
@@ -1536,24 +2687,18 @@ function moveCalendarMonth(
             now.getMonth();
 
 
-    if (isCurrentMonth) {
-
-        selectedCalendarKey =
-            todayKey;
-
-    }
-
-    else {
-
-        selectedCalendarKey =
-            formatDateKey(
+    selectedCalendarKey =
+        isCurrentMonth
+            ? todayKey
+            : formatDateKey(
                 calendarCursor
             );
-    }
 
 
     renderCalendar();
+
 }
+
 
 
 document
@@ -1567,8 +2712,10 @@ document
             moveCalendarMonth(
                 -1
             );
+
         }
     );
+
 
 
 document
@@ -1582,8 +2729,10 @@ document
             moveCalendarMonth(
                 1
             );
+
         }
     );
+
 
 
 function formatHistoryValue(
@@ -1591,16 +2740,23 @@ function formatHistoryValue(
     value
 ) {
 
-    if (habit.type === "boolean") {
+    if (
+        habit.type ===
+        "boolean"
+    ) {
 
         return value
             ? "Fatto ✓"
             : "Non fatto";
+
     }
 
 
-    return `${value} ${habit.unit}`;
+    return `${value} ${habit.unit || ""}`
+        .trim();
+
 }
+
 
 
 function renderSelectedDate() {
@@ -1610,10 +2766,12 @@ function renderSelectedDate() {
             "selected-date-title"
         );
 
+
     const scoreElement =
         document.getElementById(
             "selected-date-score"
         );
+
 
     const details =
         document.getElementById(
@@ -1650,22 +2808,28 @@ function renderSelectedDate() {
         scoreElement.textContent =
             "—";
 
+
         const empty =
             document.createElement(
                 "div"
             );
 
+
         empty.className =
             "empty-state";
 
+
         empty.textContent =
             "Nessun dato registrato per questa giornata.";
+
 
         details.appendChild(
             empty
         );
 
+
         return;
+
     }
 
 
@@ -1679,116 +2843,152 @@ function renderSelectedDate() {
         `${score}%`;
 
 
-    dailyHabits.forEach(
-        habit => {
+    historicalDailyHabits(
+        selectedCalendarKey
+    )
+        .forEach(
+            habit => {
 
-            const value =
-                getHistoricalHabitValue(
-                    habit,
-                    selectedCalendarKey
+                const value =
+                    getHistoricalHabitValue(
+                        habit,
+                        selectedCalendarKey
+                    );
+
+
+                const completed =
+                    isCompletedFromValue(
+                        habit,
+                        value
+                    );
+
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                row.className =
+                    "history-row";
+
+
+                const icon =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                icon.className =
+                    "history-icon";
+
+
+                icon.textContent =
+                    habit.icon;
+
+
+                const name =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                name.className =
+                    "history-name";
+
+
+                name.textContent =
+                    habit.name;
+
+
+                const result =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                result.className =
+                    "history-value";
+
+
+                if (
+                    completed
+                ) {
+
+                    result.classList.add(
+                        "done"
+                    );
+
+                }
+
+
+                result.textContent =
+                    formatHistoryValue(
+                        habit,
+                        value
+                    );
+
+
+                row.appendChild(
+                    icon
                 );
 
 
-            const completed =
-                isCompletedFromValue(
-                    habit,
-                    value
+                row.appendChild(
+                    name
                 );
 
 
-            const row =
-                document.createElement(
-                    "div"
+                row.appendChild(
+                    result
                 );
 
-            row.className =
-                "history-row";
 
-
-            const icon =
-                document.createElement(
-                    "div"
+                details.appendChild(
+                    row
                 );
 
-            icon.className =
-                "history-icon";
-
-            icon.textContent =
-                habit.icon;
-
-
-            const name =
-                document.createElement(
-                    "div"
-                );
-
-            name.className =
-                "history-name";
-
-            name.textContent =
-                habit.name;
-
-
-            const result =
-                document.createElement(
-                    "div"
-                );
-
-            result.className =
-                "history-value";
-
-            if (completed) {
-
-                result.classList.add(
-                    "done"
-                );
             }
+        );
 
-
-            result.textContent =
-                formatHistoryValue(
-                    habit,
-                    value
-                );
-
-
-            row.appendChild(
-                icon
-            );
-
-            row.appendChild(
-                name
-            );
-
-            row.appendChild(
-                result
-            );
-
-
-            details.appendChild(
-                row
-            );
-
-        }
-    );
 }
 
 
+
 /* =========================================
-   HABITS PAGE
+   HABITS PAGE — LIBRERIA
 ========================================= */
 
 function createLibraryRow(
     habit
 ) {
 
+    const active =
+        getActiveHabitIds()
+            .includes(
+                habit.id
+            );
+
+
     const row =
         document.createElement(
             "div"
         );
 
+
     row.className =
         "library-row";
+
+
+    if (
+        !active
+    ) {
+
+        row.classList.add(
+            "inactive"
+        );
+
+    }
 
 
     const icon =
@@ -1796,8 +2996,10 @@ function createLibraryRow(
             "div"
         );
 
+
     icon.className =
         "library-icon";
+
 
     icon.textContent =
         habit.icon;
@@ -1814,8 +3016,10 @@ function createLibraryRow(
             "div"
         );
 
+
     name.className =
         "library-name";
+
 
     name.textContent =
         habit.name;
@@ -1826,50 +3030,101 @@ function createLibraryRow(
             "div"
         );
 
+
     description.className =
         "library-description";
 
+
     description.textContent =
-        habit.description;
+        `${habit.category} • ${habit.description}`;
 
 
     info.appendChild(
         name
     );
 
+
     info.appendChild(
         description
     );
 
 
-    const badge =
+    const action =
         document.createElement(
-            "span"
+            "div"
         );
 
-    badge.className =
-        "frequency-badge";
 
-    badge.textContent =
-        habit.frequency
-            .toUpperCase();
+    action.className =
+        "library-action";
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.type =
+        "button";
+
+
+    button.className =
+        "toggle-habit-button";
+
+
+    button.classList.toggle(
+        "active",
+        active
+    );
+
+
+    button.textContent =
+        active
+            ? "Disattiva"
+            : "+ Attiva";
+
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            toggleHabitActive(
+                habit.id
+            );
+
+
+            pageSubtitle.textContent =
+                `${getActiveHabits().length} attive • ${habitLibrary.length} disponibili`;
+
+        }
+    );
+
+
+    action.appendChild(
+        button
+    );
 
 
     row.appendChild(
         icon
     );
 
+
     row.appendChild(
         info
     );
 
+
     row.appendChild(
-        badge
+        action
     );
 
 
     return row;
+
 }
+
 
 
 function renderHabitLibrary() {
@@ -1879,10 +3134,12 @@ function renderHabitLibrary() {
             "habits-daily"
         );
 
+
     const weeklyContainer =
         document.getElementById(
             "habits-weekly"
         );
+
 
     const monthlyContainer =
         document.getElementById(
@@ -1890,12 +3147,87 @@ function renderHabitLibrary() {
         );
 
 
-    dailyContainer.innerHTML = "";
-    weeklyContainer.innerHTML = "";
-    monthlyContainer.innerHTML = "";
+    dailyContainer.innerHTML =
+        "";
 
 
-    habits.forEach(
+    weeklyContainer.innerHTML =
+        "";
+
+
+    monthlyContainer.innerHTML =
+        "";
+
+
+    const activeIds =
+        new Set(
+            getActiveHabitIds()
+        );
+
+
+    /*
+    Ordine:
+    1. attive prima
+    2. categoria
+    3. nome
+    */
+
+    const sortedHabits =
+        [...habitLibrary]
+            .sort(
+                (a, b) => {
+
+                    const activeDifference =
+                        Number(
+                            activeIds.has(
+                                b.id
+                            )
+                        )
+                        -
+                        Number(
+                            activeIds.has(
+                                a.id
+                            )
+                        );
+
+
+                    if (
+                        activeDifference !==
+                        0
+                    ) {
+
+                        return activeDifference;
+
+                    }
+
+
+                    const categoryDifference =
+                        a.category.localeCompare(
+                            b.category,
+                            "it"
+                        );
+
+
+                    if (
+                        categoryDifference !==
+                        0
+                    ) {
+
+                        return categoryDifference;
+
+                    }
+
+
+                    return a.name.localeCompare(
+                        b.name,
+                        "it"
+                    );
+
+                }
+            );
+
+
+    sortedHabits.forEach(
         habit => {
 
             const row =
@@ -1909,10 +3241,10 @@ function renderHabitLibrary() {
                 "daily"
             ) {
 
-                dailyContainer
-                    .appendChild(
-                        row
-                    );
+                dailyContainer.appendChild(
+                    row
+                );
+
             }
 
 
@@ -1921,10 +3253,10 @@ function renderHabitLibrary() {
                 "weekly"
             ) {
 
-                weeklyContainer
-                    .appendChild(
-                        row
-                    );
+                weeklyContainer.appendChild(
+                    row
+                );
+
             }
 
 
@@ -1933,15 +3265,33 @@ function renderHabitLibrary() {
                 "monthly"
             ) {
 
-                monthlyContainer
-                    .appendChild(
-                        row
-                    );
+                monthlyContainer.appendChild(
+                    row
+                );
+
             }
 
         }
     );
+
+
+    const infoText =
+        document.querySelector(
+            "#page-habits .info-text"
+        );
+
+
+    if (
+        infoText
+    ) {
+
+        infoText.textContent =
+            "Attiva solo le abitudini che vuoi davvero tracciare. Disattivarne una non cancella lo storico già registrato.";
+
+    }
+
 }
+
 
 
 /* =========================================
@@ -1955,13 +3305,12 @@ function trackedDailyKeys() {
             data.daily
         )
         .filter(
-            key =>
-                hasTrackedData(
-                    key
-                )
+            hasTrackedData
         )
         .sort();
+
 }
+
 
 
 function keysWithinLastDays(
@@ -1981,6 +3330,7 @@ function keysWithinLastDays(
             end
         );
 
+
     start.setDate(
         start.getDate() -
         (days - 1)
@@ -1996,13 +3346,17 @@ function keysWithinLastDays(
                         key
                     );
 
+
                 return (
                     date >= start &&
                     date <= end
                 );
+
             }
         );
+
 }
+
 
 
 function average(
@@ -2010,10 +3364,12 @@ function average(
 ) {
 
     if (
-        values.length === 0
+        values.length ===
+        0
     ) {
 
         return null;
+
     }
 
 
@@ -2022,7 +3378,9 @@ function average(
             sum + value,
         0
     ) / values.length;
+
 }
+
 
 
 function formatItalianNumber(
@@ -2032,10 +3390,12 @@ function formatItalianNumber(
     return Math.round(
         number
     )
-    .toLocaleString(
-        "it-IT"
-    );
+        .toLocaleString(
+            "it-IT"
+        );
+
 }
+
 
 
 function renderStats() {
@@ -2044,6 +3404,7 @@ function renderStats() {
         keysWithinLastDays(
             7
         );
+
 
     const keys30 =
         keysWithinLastDays(
@@ -2077,6 +3438,7 @@ function renderStats() {
         average(
             scores7
         );
+
 
     const average30 =
         average(
@@ -2132,6 +3494,11 @@ function renderStats() {
             .length;
 
 
+
+    /* =========================
+       SONNO
+    ========================= */
+
     const sleepValues =
         keys30
             .map(
@@ -2170,6 +3537,11 @@ function renderStats() {
             } h`;
 
 
+
+    /* =========================
+       PASSI
+    ========================= */
+
     const stepValues =
         keys30
             .map(
@@ -2203,17 +3575,20 @@ function renderStats() {
             );
 
 
+
+    /* =========================
+       LETTURA
+    ========================= */
+
     const readingTotal =
         keys30.reduce(
             (sum, key) => {
 
-                return (
-                    sum +
+                return sum +
                     Number(
                         data.daily[key]
                             ?.reading || 0
-                    )
-                );
+                    );
 
             },
             0
@@ -2228,12 +3603,22 @@ function renderStats() {
         `${readingTotal} min`;
 
 
+
+    /* =========================
+       ALLENAMENTI
+    ========================= */
+
     const workouts =
-        habits.find(
-            habit =>
-                habit.id ===
-                "workouts"
+        getHabitById(
+            "workouts"
         );
+
+
+    const workoutsActive =
+        getActiveHabitIds()
+            .includes(
+                "workouts"
+            );
 
 
     document
@@ -2241,10 +3626,14 @@ function renderStats() {
             "stat-workouts"
         )
         .textContent =
-        `${getHabitValue(
-            workouts
-        )} / 4`;
+        workoutsActive
+            ? `${getHabitValue(
+                workouts
+            )} / 4`
+            : "Disattivato";
+
 }
+
 
 
 /* =========================================
