@@ -1147,3 +1147,50 @@ footer {
     }
 
 }
+/* =========================
+   MOMENTUM v0.4
+   HABIT LIBRARY
+========================= */
+
+.library-row.inactive {
+    opacity: 0.62;
+}
+
+.library-action {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.toggle-habit-button {
+    min-height: 38px;
+    padding: 0 11px;
+
+    border: 0;
+    border-radius: 10px;
+
+    background: var(--dark);
+    color: white;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.toggle-habit-button.active {
+    background: var(--soft);
+    color: var(--text);
+
+    border: 1px solid var(--border);
+}
+
+@media (max-width: 520px) {
+
+    .toggle-habit-button {
+        padding: 0 9px;
+        font-size: 10px;
+    }
+
+}
