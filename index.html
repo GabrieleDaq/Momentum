@@ -6,199 +6,502 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     >
 
     <title>Momentum</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-    <div class="app">
+<div class="app">
 
-        <!-- HEADER -->
+    <!-- HEADER -->
 
-        <header class="topbar">
+    <header class="topbar">
 
-            <div>
-                <p class="brand">MOMENTUM</p>
+        <div class="header-copy">
+            <p class="brand">MOMENTUM</p>
 
-                <h1>Oggi</h1>
+            <h1 id="page-title">Oggi</h1>
 
-                <p
-                    id="current-date"
-                    class="current-date"
-                ></p>
-            </div>
-
-
-            <div class="score-card">
-
-                <span id="daily-score">
-                    0%
-                </span>
-
-                <small>
-                    completato
-                </small>
-
-            </div>
-
-        </header>
+            <p
+                id="page-subtitle"
+                class="current-date"
+            ></p>
+        </div>
 
 
-        <!-- DAILY PROGRESS -->
+        <div
+            id="header-score"
+            class="score-card"
+        >
+            <span id="daily-score">0%</span>
 
-        <section class="overview-card">
+            <small>completato</small>
+        </div>
 
-            <div class="overview-top">
+    </header>
 
-                <div>
-                    <p class="mini-label">
-                        DAILY SCORE
-                    </p>
 
-                    <strong id="daily-counter">
-                        0 / 7
-                    </strong>
+
+    <main>
+
+        <!-- =====================
+             TODAY
+        ====================== -->
+
+        <section
+            id="page-today"
+            class="page active"
+        >
+
+            <section class="overview-card">
+
+                <div class="overview-top">
+
+                    <div>
+                        <p class="mini-label">
+                            DAILY SCORE
+                        </p>
+
+                        <strong id="daily-counter">
+                            0 / 7
+                        </strong>
+                    </div>
+
+                    <span id="daily-message">
+                        Iniziamo.
+                    </span>
+
                 </div>
 
-                <span id="daily-message">
-                    Iniziamo.
-                </span>
 
-            </div>
+                <div class="progress-track">
+                    <div
+                        id="daily-progress"
+                        class="progress-fill"
+                    ></div>
+                </div>
+
+            </section>
 
 
-            <div class="progress-track">
+
+            <section class="habit-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="section-label">
+                            🌞 DAILY
+                        </p>
+
+                        <h2>Ogni giorno</h2>
+                    </div>
+
+                    <span class="section-frequency">
+                        Oggi
+                    </span>
+
+                </div>
 
                 <div
-                    id="daily-progress"
-                    class="progress-fill"
+                    id="daily-list"
+                    class="habit-list"
+                ></div>
+
+            </section>
+
+
+
+            <section class="habit-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="section-label">
+                            📅 WEEKLY
+                        </p>
+
+                        <h2>Questa settimana</h2>
+                    </div>
+
+                    <span
+                        id="weekly-score"
+                        class="section-frequency"
+                    >
+                        0 / 2
+                    </span>
+
+                </div>
+
+                <div
+                    id="weekly-list"
+                    class="habit-list"
+                ></div>
+
+            </section>
+
+
+
+            <section class="habit-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="section-label">
+                            🗓️ MONTHLY
+                        </p>
+
+                        <h2>Questo mese</h2>
+                    </div>
+
+                    <span
+                        id="monthly-score"
+                        class="section-frequency"
+                    >
+                        0 / 2
+                    </span>
+
+                </div>
+
+                <div
+                    id="monthly-list"
+                    class="habit-list"
+                ></div>
+
+            </section>
+
+        </section>
+
+
+
+        <!-- =====================
+             CALENDAR
+        ====================== -->
+
+        <section
+            id="page-calendar"
+            class="page"
+        >
+
+            <div class="calendar-card">
+
+                <div class="calendar-toolbar">
+
+                    <button
+                        id="previous-month"
+                        class="calendar-nav-button"
+                        type="button"
+                        aria-label="Mese precedente"
+                    >
+                        ‹
+                    </button>
+
+                    <div class="calendar-title-wrap">
+                        <p class="mini-label">
+                            CALENDARIO
+                        </p>
+
+                        <h2 id="calendar-month-title">
+                            Agosto 2026
+                        </h2>
+                    </div>
+
+                    <button
+                        id="next-month"
+                        class="calendar-nav-button"
+                        type="button"
+                        aria-label="Mese successivo"
+                    >
+                        ›
+                    </button>
+
+                </div>
+
+
+                <div class="calendar-weekdays">
+
+                    <span>L</span>
+                    <span>M</span>
+                    <span>M</span>
+                    <span>G</span>
+                    <span>V</span>
+                    <span>S</span>
+                    <span>D</span>
+
+                </div>
+
+
+                <div
+                    id="calendar-days"
+                    class="calendar-days"
                 ></div>
 
             </div>
 
+
+            <section class="calendar-details-card">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="section-label">
+                            DETTAGLIO
+                        </p>
+
+                        <h2 id="selected-date-title">
+                            Oggi
+                        </h2>
+                    </div>
+
+                    <strong
+                        id="selected-date-score"
+                        class="detail-score"
+                    >
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div
+                    id="selected-date-details"
+                    class="history-list"
+                ></div>
+
+            </section>
+
         </section>
 
 
-        <!-- DAILY -->
 
-        <section class="habit-section">
+        <!-- =====================
+             HABITS
+        ====================== -->
 
-            <div class="section-heading">
+        <section
+            id="page-habits"
+            class="page"
+        >
 
-                <div>
-                    <p class="section-label">
-                        🌞 DAILY
-                    </p>
+            <section class="info-card">
 
-                    <h2>
-                        Ogni giorno
-                    </h2>
+                <p class="mini-label">
+                    ACTIVE SYSTEM
+                </p>
+
+                <h2>Le tue abitudini</h2>
+
+                <p class="info-text">
+                    Queste sono le abitudini attualmente
+                    attive in Momentum.
+                </p>
+
+            </section>
+
+
+            <section class="habit-section">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">DAILY</p>
+                        <h2>Giornaliere</h2>
+                    </div>
                 </div>
 
-                <span class="section-frequency">
-                    Oggi
-                </span>
+                <div
+                    id="habits-daily"
+                    class="habit-library-list"
+                ></div>
+
+            </section>
+
+
+            <section class="habit-section">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">WEEKLY</p>
+                        <h2>Settimanali</h2>
+                    </div>
+                </div>
+
+                <div
+                    id="habits-weekly"
+                    class="habit-library-list"
+                ></div>
+
+            </section>
+
+
+            <section class="habit-section">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">MONTHLY</p>
+                        <h2>Mensili</h2>
+                    </div>
+                </div>
+
+                <div
+                    id="habits-monthly"
+                    class="habit-library-list"
+                ></div>
+
+            </section>
+
+        </section>
+
+
+
+        <!-- =====================
+             STATS
+        ====================== -->
+
+        <section
+            id="page-stats"
+            class="page"
+        >
+
+            <section class="info-card">
+
+                <p class="mini-label">
+                    ANALYTICS
+                </p>
+
+                <h2>I tuoi progressi</h2>
+
+                <p class="info-text">
+                    Le statistiche vengono calcolate
+                    esclusivamente sui giorni che hai registrato.
+                </p>
+
+            </section>
+
+
+            <div class="stats-grid">
+
+                <article class="stat-card">
+                    <span class="stat-icon">⚡</span>
+                    <p>Score medio 7 giorni</p>
+                    <strong id="stat-score-7">—</strong>
+                </article>
+
+
+                <article class="stat-card">
+                    <span class="stat-icon">📆</span>
+                    <p>Score medio 30 giorni</p>
+                    <strong id="stat-score-30">—</strong>
+                </article>
+
+
+                <article class="stat-card">
+                    <span class="stat-icon">⭐</span>
+                    <p>Giorni ≥ 80%</p>
+                    <strong id="stat-days-80">—</strong>
+                </article>
+
+
+                <article class="stat-card">
+                    <span class="stat-icon">📝</span>
+                    <p>Giorni tracciati</p>
+                    <strong id="stat-tracked-days">0</strong>
+                </article>
+
+
+                <article class="stat-card">
+                    <span class="stat-icon">😴</span>
+                    <p>Sonno medio</p>
+                    <strong id="stat-sleep">—</strong>
+                </article>
+
+
+                <article class="stat-card">
+                    <span class="stat-icon">🚶</span>
+                    <p>Passi medi</p>
+                    <strong id="stat-steps">—</strong>
+                </article>
+
+
+                <article class="stat-card">
+                    <span class="stat-icon">📚</span>
+                    <p>Lettura ultimi 30g</p>
+                    <strong id="stat-reading">—</strong>
+                </article>
+
+
+                <article class="stat-card">
+                    <span class="stat-icon">🏋️</span>
+                    <p>Allenamenti settimana</p>
+                    <strong id="stat-workouts">0 / 4</strong>
+                </article>
 
             </div>
 
-
-            <div
-                id="daily-list"
-                class="habit-list"
-            ></div>
-
         </section>
 
-
-        <!-- WEEKLY -->
-
-        <section class="habit-section">
-
-            <div class="section-heading">
-
-                <div>
-                    <p class="section-label">
-                        📅 WEEKLY
-                    </p>
-
-                    <h2>
-                        Questa settimana
-                    </h2>
-                </div>
-
-                <span
-                    id="weekly-score"
-                    class="section-frequency"
-                >
-                    0 / 2
-                </span>
-
-            </div>
+    </main>
 
 
-            <div
-                id="weekly-list"
-                class="habit-list"
-            ></div>
+    <footer>
+        Momentum • costruisci costanza, non perfezione.
+    </footer>
 
-        </section>
-
-
-        <!-- MONTHLY -->
-
-        <section class="habit-section">
-
-            <div class="section-heading">
-
-                <div>
-                    <p class="section-label">
-                        🗓️ MONTHLY
-                    </p>
-
-                    <h2>
-                        Questo mese
-                    </h2>
-                </div>
-
-                <span
-                    id="monthly-score"
-                    class="section-frequency"
-                >
-                    0 / 2
-                </span>
-
-            </div>
+</div>
 
 
-            <div
-                id="monthly-list"
-                class="habit-list"
-            ></div>
 
-        </section>
+<!-- BOTTOM NAVIGATION -->
 
+<nav class="bottom-nav">
 
-        <footer>
-
-            <p>
-                Momentum • costruisci costanza, non perfezione.
-            </p>
-
-        </footer>
-
-    </div>
+    <button
+        class="nav-button active"
+        data-page="today"
+        type="button"
+    >
+        <span class="nav-icon">⌂</span>
+        <span>Oggi</span>
+    </button>
 
 
-    <script src="app.js"></script>
+    <button
+        class="nav-button"
+        data-page="calendar"
+        type="button"
+    >
+        <span class="nav-icon">▦</span>
+        <span>Calendario</span>
+    </button>
+
+
+    <button
+        class="nav-button"
+        data-page="habits"
+        type="button"
+    >
+        <span class="nav-icon">✓</span>
+        <span>Habits</span>
+    </button>
+
+
+    <button
+        class="nav-button"
+        data-page="stats"
+        type="button"
+    >
+        <span class="nav-icon">⌁</span>
+        <span>Stats</span>
+    </button>
+
+</nav>
+
+
+<script src="app.js"></script>
 
 </body>
 
