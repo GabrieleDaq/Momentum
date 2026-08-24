@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Momentum</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <p class="eyebrow">MOMENTUM</p>
+            <h1>Oggi</h1>
+            <p id="current-date"></p>
+        </div>
+
+        <div class="score">
+            <span id="score-number">0%</span>
+            <small>completato</small>
+        </div>
+    </header>
+
+
+    <main>
+
+        <section class="progress-section">
+
+            <div class="progress-info">
+                <span>Progresso giornaliero</span>
+                <span id="completed-counter">0 / 5</span>
+            </div>
+
+            <div class="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+
+        </section>
+
+
+        <section>
+
+            <div class="section-title">
+                <div>
+                    <p class="eyebrow">BUILD</p>
+                    <h2>Costruisci</h2>
+                </div>
+            </div>
+
+
+            <div class="habit-list">
+
+                <div class="habit-card">
+
+                    <div class="habit-icon">
+                        🏋️
+                    </div>
+
+                    <div class="habit-content">
+                        <h3>Allenamento</h3>
+                        <p>Target: 4 volte questa settimana</p>
+                    </div>
+
+                    <button class="habit-check">
+                        ✓
+                    </button>
+
+                </div>
+
+
+                <div class="habit-card">
+
+                    <div class="habit-icon">
+                        🚶
+                    </div>
+
+                    <div class="habit-content">
+                        <h3>Movimento</h3>
+                        <p>Raggiungi il tuo target giornaliero</p>
+                    </div>
+
+                    <button class="habit-check">
+                        ✓
+                    </button>
+
+                </div>
+
+
+                <div class="habit-card">
+
+                    <div class="habit-icon">
+                        📚
+                    </div>
+
+                    <div class="habit-content">
+                        <h3>Lettura</h3>
+                        <p>20 minuti</p>
+                    </div>
+
+                    <button class="habit-check">
+                        ✓
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section>
+
+            <div class="section-title">
+                <div>
+                    <p class="eyebrow">MAINTAIN</p>
+                    <h2>Mantieni</h2>
+                </div>
+            </div>
+
+
+            <div class="habit-list">
+
+                <div class="habit-card">
+
+                    <div class="habit-icon">
+                        💧
+                    </div>
+
+                    <div class="habit-content">
+                        <h3>Acqua</h3>
+                        <p>Target giornaliero</p>
+                    </div>
+
+                    <button class="habit-check">
+                        ✓
+                    </button>
+
+                </div>
+
+
+                <div class="habit-card">
+
+                    <div class="habit-icon">
+                        😴
+                    </div>
+
+                    <div class="habit-content">
+                        <h3>Sonno</h3>
+                        <p>Almeno 7 ore</p>
+                    </div>
+
+                    <button class="habit-check">
+                        ✓
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section>
+
+            <div class="section-title">
+                <div>
+                    <p class="eyebrow">CONTROL</p>
+                    <h2>Tieni sotto controllo</h2>
+                </div>
+            </div>
+
+
+            <div class="metric-card">
+
+                <div>
+                    <span class="metric-icon">🚬</span>
+                    <h3>Sigarette</h3>
+                    <p>Quante oggi?</p>
+                </div>
+
+                <div class="counter">
+
+                    <button id="minus-cigarette">−</button>
+
+                    <span id="cigarette-count">
+                        0
+                    </span>
+
+                    <button id="plus-cigarette">+</button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f4f5f7;
+    color: #16181d;
+
+    max-width: 700px;
+    margin: auto;
+
+    padding: 32px 20px 80px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 35px;
+}
+
+h1 {
+    font-size: 38px;
+}
+
+h2 {
+    font-size: 22px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+p {
+    color: #777;
+}
+
+.eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+
+    color: #777;
+
+    margin-bottom: 5px;
+}
+
+.score {
+    background: #16181d;
+    color: white;
+
+    border-radius: 18px;
+
+    padding: 14px 18px;
+
+    text-align: center;
+}
+
+.score span {
+    font-size: 22px;
+    font-weight: 700;
+
+    display: block;
+}
+
+.score small {
+    color: #aaa;
+}
+
+.progress-section {
+    margin-bottom: 40px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 13px;
+
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+
+    border-radius: 100px;
+
+    background: #ddd;
+
+    overflow: hidden;
+}
+
+#progress-fill {
+    height: 100%;
+    width: 0%;
+
+    background: #16181d;
+
+    transition: width .3s ease;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    margin-bottom: 14px;
+}
+
+.habit-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.habit-card {
+    display: flex;
+    align-items: center;
+
+    background: white;
+
+    padding: 16px;
+
+    border-radius: 16px;
+
+    gap: 15px;
+}
+
+.habit-icon {
+    width: 44px;
+    height: 44px;
+
+    border-radius: 12px;
+
+    background: #f2f2f2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+.habit-content {
+    flex: 1;
+}
+
+.habit-content p {
+    font-size: 13px;
+
+    margin-top: 3px;
+}
+
+.habit-check {
+    width: 42px;
+    height: 42px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #ececec;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.habit-check.completed {
+    background: #16181d;
+    color: white;
+}
+
+.metric-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 18px;
+}
+
+.metric-icon {
+    font-size: 25px;
+
+    display: block;
+
+    margin-bottom: 8px;
+}
+
+.metric-card p {
+    font-size: 13px;
+
+    margin-top: 4px;
+}
+
+.counter {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+}
+
+.counter button {
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #eee;
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+.counter span {
+    font-size: 25px;
+    font-weight: 700;
+
+    width: 30px;
+
+    text-align: center;
+}
