@@ -709,7 +709,21 @@ const habitLibrary = [
 
 ];
 
+/* =========================================
+   ORIGINAL HABIT DEFAULTS
+========================================= */
 
+const ORIGINAL_HABIT_DEFAULTS = {};
+
+habitLibrary.forEach(habit => {
+
+    ORIGINAL_HABIT_DEFAULTS[
+        habit.id
+    ] = {
+        ...habit
+    };
+
+});
 
 /* =========================================
    DEFAULT ACTIVE HABITS
@@ -886,6 +900,35 @@ if (!data.settings) {
     data.settings = {};
 }
 
+/* =========================================
+   CUSTOM HABIT SETTINGS — v0.5
+========================================= */
+
+if (!data.settings.habitOverrides) {
+    data.settings.habitOverrides = {};
+}
+
+
+/*
+Applica eventuali modifiche personalizzate
+alla libreria delle abitudini.
+*/
+
+habitLibrary.forEach(habit => {
+
+    const override =
+        data.settings.habitOverrides[habit.id];
+
+    if (!override) {
+        return;
+    }
+
+    Object.assign(
+        habit,
+        override
+    );
+
+});
 
 /*
 Se è la prima volta che usiamo
@@ -1299,6 +1342,82 @@ function toggleHabitActive(
 
 
 
+
+
+/* =========================================
+   DYNAMIC HABIT DESCRIPTION
+========================================= */
+
+function formatTargetValue(value) {
+
+    return Number(value)
+        .toLocaleString(
+            "it-IT",
+            {
+                maximumFractionDigits: 2
+            }
+        );
+
+}
+
+
+function getHabitDisplayDescription(habit) {
+
+    /*
+    Habit semplici sì/no:
+    manteniamo la descrizione originale.
+    */
+
+    if (habit.type === "boolean") {
+
+        return habit.description;
+
+    }
+
+
+    /*
+    Habit con limite massimo.
+    */
+
+    if (habit.type === "limit") {
+
+        return `Target massimo: ${formatTargetValue(
+            habit.target
+        )} ${habit.unit || ""}`;
+
+    }
+
+
+    /*
+    Counter settimanali/mensili.
+    */
+
+    if (habit.type === "counter") {
+
+        return `Obiettivo: ${formatTargetValue(
+            habit.target
+        )} completamenti`;
+
+    }
+
+
+    /*
+    Habit numeriche.
+    */
+
+    if (habit.type === "number") {
+
+        return `Obiettivo: ${formatTargetValue(
+            habit.target
+        )} ${habit.unit || ""}`;
+
+    }
+
+
+    return habit.description;
+
+}
+
 /* =========================================
    TODAY HABIT CARDS
 ========================================= */
@@ -1358,7 +1477,9 @@ function createHabitCard(
         "habit-description";
 
     description.textContent =
-        habit.description;
+    getHabitDisplayDescription(
+        habit
+    );
 
 
     info.appendChild(
@@ -2953,7 +3074,541 @@ function renderSelectedDate() {
 
 }
 
+/* =========================================
+   EDIT HABIT — v0.5
+========================================= */
 
+function createEditHabitModal() {
+
+    if (
+        document.getElementById(
+            "habit-edit-overlay"
+        )
+    ) {
+        return;
+    }
+
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.id =
+        "habit-edit-overlay";
+
+    overlay.className =
+        "habit-edit-overlay";
+
+    overlay.hidden =
+        true;
+
+
+    overlay.innerHTML = `
+        <div class="habit-edit-modal">
+
+            <div class="habit-edit-header">
+
+                <div>
+                    <p class="mini-label">
+                        PERSONALIZZA
+                    </p>
+
+                    <h2>
+                        Modifica abitudine
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    id="close-habit-edit"
+                    class="habit-edit-close"
+                    aria-label="Chiudi"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="habit-edit-form">
+
+                <input
+                    type="hidden"
+                    id="edit-habit-id"
+                >
+
+
+                <label class="habit-edit-field">
+
+                    <span>Nome</span>
+
+                    <input
+                        id="edit-habit-name"
+                        type="text"
+                        required
+                        maxlength="40"
+                    >
+
+                </label>
+
+
+                <label class="habit-edit-field">
+
+                    <span>Icona</span>
+
+                    <input
+                        id="edit-habit-icon"
+                        type="text"
+                        maxlength="4"
+                    >
+
+                </label>
+
+
+                <div class="habit-edit-row">
+
+                    <label class="habit-edit-field">
+
+                        <span>Target</span>
+
+                        <input
+                            id="edit-habit-target"
+                            type="number"
+                            min="0"
+                            step="0.5"
+                        >
+
+                    </label>
+
+
+                    <label class="habit-edit-field">
+
+                        <span>Unità</span>
+
+                        <input
+                            id="edit-habit-unit"
+                            type="text"
+                            maxlength="12"
+                            placeholder="min, h, L..."
+                        >
+
+                    </label>
+
+                </div>
+
+
+                <div
+                    id="edit-habit-target-note"
+                    class="habit-edit-note"
+                ></div>
+
+
+                <div class="habit-edit-actions">
+
+                    <button
+                        type="button"
+                        id="reset-habit-edit"
+                        class="secondary-action"
+                    >
+                        Ripristina
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-action"
+                    >
+                        Salva modifiche
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    `;
+
+
+    document.body.appendChild(
+        overlay
+    );
+
+
+    document
+        .getElementById(
+            "close-habit-edit"
+        )
+        .addEventListener(
+            "click",
+            closeHabitEditor
+        );
+
+
+    overlay.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                overlay
+            ) {
+
+                closeHabitEditor();
+
+            }
+
+        }
+    );
+
+
+    document
+        .getElementById(
+            "habit-edit-form"
+        )
+        .addEventListener(
+            "submit",
+            saveHabitEditor
+        );
+
+
+    document
+        .getElementById(
+            "reset-habit-edit"
+        )
+        .addEventListener(
+            "click",
+            resetHabitEditor
+        );
+
+}
+
+
+
+function openHabitEditor(
+    habitId
+) {
+
+    const habit =
+        getHabitById(
+            habitId
+        );
+
+
+    if (!habit) {
+        return;
+    }
+
+
+    const overlay =
+        document.getElementById(
+            "habit-edit-overlay"
+        );
+
+
+    document
+        .getElementById(
+            "edit-habit-id"
+        )
+        .value =
+        habit.id;
+
+
+    document
+        .getElementById(
+            "edit-habit-name"
+        )
+        .value =
+        habit.name;
+
+
+    document
+        .getElementById(
+            "edit-habit-icon"
+        )
+        .value =
+        habit.icon;
+
+
+    const targetInput =
+        document.getElementById(
+            "edit-habit-target"
+        );
+
+
+    const unitInput =
+        document.getElementById(
+            "edit-habit-unit"
+        );
+
+
+    const note =
+        document.getElementById(
+            "edit-habit-target-note"
+        );
+
+
+    if (
+        habit.type ===
+        "boolean"
+    ) {
+
+        targetInput.disabled =
+            true;
+
+        unitInput.disabled =
+            true;
+
+        targetInput.value =
+            "";
+
+        unitInput.value =
+            "";
+
+        note.textContent =
+            "Questa abitudine usa Fatto / Non fatto, quindi non ha un target numerico.";
+
+    }
+
+    else {
+
+        targetInput.disabled =
+            false;
+
+        unitInput.disabled =
+            false;
+
+        targetInput.value =
+            habit.target ?? "";
+
+        unitInput.value =
+            habit.unit ?? "";
+
+        note.textContent =
+            habit.type === "limit"
+                ? "Per questa abitudine il target rappresenta il limite massimo."
+                : "Il target determina quando Momentum considera completata l'abitudine.";
+
+    }
+
+
+    overlay.hidden =
+        false;
+
+}
+
+
+
+function closeHabitEditor() {
+
+    const overlay =
+        document.getElementById(
+            "habit-edit-overlay"
+        );
+
+
+    if (overlay) {
+
+        overlay.hidden =
+            true;
+
+    }
+
+}
+
+
+
+function saveHabitEditor(
+    event
+) {
+
+    event.preventDefault();
+
+
+    const habitId =
+        document
+            .getElementById(
+                "edit-habit-id"
+            )
+            .value;
+
+
+    const habit =
+        getHabitById(
+            habitId
+        );
+
+
+    if (!habit) {
+        return;
+    }
+
+
+    const name =
+        document
+            .getElementById(
+                "edit-habit-name"
+            )
+            .value
+            .trim();
+
+
+    const icon =
+        document
+            .getElementById(
+                "edit-habit-icon"
+            )
+            .value
+            .trim();
+
+
+    const override = {
+        name:
+            name || habit.name,
+
+        icon:
+            icon || habit.icon
+    };
+
+
+    if (
+        habit.type !==
+        "boolean"
+    ) {
+
+        let target =
+            Number(
+                document
+                    .getElementById(
+                        "edit-habit-target"
+                    )
+                    .value
+            );
+
+
+        if (
+            !Number.isFinite(
+                target
+            ) ||
+            target < 0
+        ) {
+
+            target =
+                habit.target;
+
+        }
+
+
+        const unit =
+            document
+                .getElementById(
+                    "edit-habit-unit"
+                )
+                .value
+                .trim();
+
+
+        override.target =
+            target;
+
+
+        override.unit =
+            unit;
+
+    }
+
+
+    data.settings
+        .habitOverrides[
+            habitId
+        ] =
+        {
+            ...(
+                data.settings
+                    .habitOverrides[
+                        habitId
+                    ] || {}
+            ),
+            ...override
+        };
+
+
+    Object.assign(
+        habit,
+        override
+    );
+
+
+    saveData();
+
+    closeHabitEditor();
+
+    renderTodayHabits();
+
+    renderHabitLibrary();
+
+    updateScores();
+
+    renderCalendar();
+
+    renderStats();
+
+}
+
+
+
+function resetHabitEditor() {
+
+    const habitId =
+        document
+            .getElementById(
+                "edit-habit-id"
+            )
+            .value;
+
+
+    const original =
+        ORIGINAL_HABIT_DEFAULTS[
+            habitId
+        ];
+
+
+    if (!original) {
+        return;
+    }
+
+
+    delete data
+        .settings
+        .habitOverrides[
+            habitId
+        ];
+
+
+    const habit =
+        getHabitById(
+            habitId
+        );
+
+
+    Object.assign(
+        habit,
+        original
+    );
+
+
+    saveData();
+
+    closeHabitEditor();
+
+    renderTodayHabits();
+
+    renderHabitLibrary();
+
+    updateScores();
+
+    renderCalendar();
+
+    renderStats();
+
+}
 
 /* =========================================
    HABITS PAGE — LIBRERIA
@@ -3036,7 +3691,9 @@ function createLibraryRow(
 
 
     description.textContent =
-        `${habit.category} • ${habit.description}`;
+    `${habit.category} • ${getHabitDisplayDescription(
+        habit
+    )}`;
 
 
     info.appendChild(
@@ -3057,6 +3714,38 @@ function createLibraryRow(
 
     action.className =
         "library-action";
+        if (active) {
+
+    const editButton =
+        document.createElement(
+            "button"
+        );
+
+    editButton.type =
+        "button";
+
+    editButton.className =
+        "edit-habit-button";
+
+    editButton.textContent =
+        "Modifica";
+
+    editButton.addEventListener(
+        "click",
+        () => {
+
+            openHabitEditor(
+                habit.id
+            );
+
+        }
+    );
+
+    action.appendChild(
+        editButton
+    );
+
+}
 
 
     const button =
@@ -3639,6 +4328,7 @@ function renderStats() {
 /* =========================================
    START
 ========================================= */
+createEditHabitModal();
 
 pageSubtitle.textContent =
     todayLabel();

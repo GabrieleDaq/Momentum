@@ -1194,3 +1194,228 @@ footer {
     }
 
 }
+
+/* =========================
+   MOMENTUM v0.5
+   EDIT HABIT
+========================= */
+
+.library-action {
+    gap: 6px;
+}
+
+
+.edit-habit-button {
+    min-height: 38px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: white;
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.habit-edit-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    background:
+        rgba(20, 22, 27, 0.45);
+
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    backdrop-filter: blur(6px);
+}
+
+
+.habit-edit-modal {
+    width: 100%;
+    max-width: 480px;
+
+    background: var(--card);
+
+    border-radius: 24px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 20px 70px
+        rgba(0,0,0,0.20);
+}
+
+
+.habit-edit-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+
+.habit-edit-close {
+    width: 40px;
+    height: 40px;
+
+    border: 0;
+    border-radius: 12px;
+
+    background: var(--soft);
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+
+.habit-edit-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    margin-bottom: 16px;
+}
+
+
+.habit-edit-field span {
+    color: var(--muted);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+}
+
+
+.habit-edit-field input {
+    width: 100%;
+    min-height: 46px;
+
+    padding: 0 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--soft);
+    color: var(--text);
+
+    font-size: 16px;
+}
+
+
+.habit-edit-field input:disabled {
+    opacity: 0.5;
+}
+
+
+.habit-edit-row {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 10px;
+}
+
+
+.habit-edit-note {
+    min-height: 34px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.4;
+
+    margin-bottom: 18px;
+}
+
+
+.habit-edit-actions {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+
+.primary-action,
+.secondary-action {
+    min-height: 46px;
+
+    padding: 0 16px;
+
+    border-radius: 12px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.primary-action {
+    flex: 1;
+
+    border: 0;
+
+    background: var(--dark);
+    color: white;
+}
+
+
+.secondary-action {
+    border: 1px solid var(--border);
+
+    background: var(--soft);
+    color: var(--text);
+}
+
+
+@media (max-width: 520px) {
+
+    .library-row {
+        grid-template-columns:
+            42px
+            minmax(0, 1fr);
+    }
+
+
+    .library-action {
+        grid-column:
+            1 / -1;
+
+        justify-content:
+            flex-end;
+    }
+
+
+    .habit-edit-modal {
+        padding: 18px;
+    }
+
+
+    .habit-edit-row {
+        grid-template-columns:
+            1fr;
+    }
+
+}
