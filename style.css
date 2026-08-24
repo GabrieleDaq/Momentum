@@ -4,113 +4,256 @@
     padding: 0;
 }
 
+
+:root {
+    --background: #f5f6f8;
+    --card: #ffffff;
+    --text: #16181d;
+    --muted: #7b7f89;
+    --border: #e8e9ed;
+    --dark: #17191e;
+    --soft: #f0f1f3;
+}
+
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f4f5f7;
-    color: #16181d;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 
-    max-width: 700px;
-    margin: auto;
+    background: var(--background);
+    color: var(--text);
 
-    padding: 32px 20px 80px;
+    min-height: 100vh;
 }
 
-header {
+
+button,
+input {
+    font: inherit;
+}
+
+
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+.app {
+    width: 100%;
+    max-width: 720px;
+
+    margin: 0 auto;
+
+    padding:
+        34px
+        20px
+        80px;
+}
+
+
+/* HEADER */
+
+.topbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
-    margin-bottom: 35px;
+    gap: 20px;
+
+    margin-bottom: 28px;
 }
+
+
+.brand {
+    color: var(--muted);
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 2.4px;
+
+    margin-bottom: 6px;
+}
+
 
 h1 {
     font-size: 38px;
+    line-height: 1;
+
+    letter-spacing: -1.5px;
 }
 
-h2 {
-    font-size: 22px;
+
+.current-date {
+    color: var(--muted);
+
+    margin-top: 8px;
+
+    font-size: 14px;
+
+    text-transform: capitalize;
 }
 
-h3 {
-    font-size: 16px;
-}
 
-p {
-    color: #777;
-}
+.score-card {
+    min-width: 102px;
 
-.eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
+    padding: 15px 16px;
 
-    color: #777;
-
-    margin-bottom: 5px;
-}
-
-.score {
-    background: #16181d;
+    background: var(--dark);
     color: white;
 
-    border-radius: 18px;
-
-    padding: 14px 18px;
+    border-radius: 20px;
 
     text-align: center;
 }
 
-.score span {
-    font-size: 22px;
-    font-weight: 700;
 
+.score-card span {
     display: block;
+
+    font-size: 25px;
+    font-weight: 800;
 }
 
-.score small {
-    color: #aaa;
+
+.score-card small {
+    display: block;
+
+    color: #b8bac0;
+
+    font-size: 11px;
+
+    margin-top: 2px;
 }
 
-.progress-section {
-    margin-bottom: 40px;
+
+/* OVERVIEW */
+
+.overview-card {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+
+    border-radius: 20px;
+
+    padding: 18px;
+
+    margin-bottom: 36px;
 }
 
-.progress-info {
+
+.overview-top {
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 20px;
+
+    margin-bottom: 14px;
+}
+
+
+.mini-label {
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    color: var(--muted);
+
+    margin-bottom: 4px;
+}
+
+
+#daily-counter {
+    font-size: 20px;
+}
+
+
+#daily-message {
+    color: var(--muted);
 
     font-size: 13px;
 
-    margin-bottom: 8px;
+    text-align: right;
 }
 
-.progress-bar {
+
+.progress-track {
     width: 100%;
     height: 10px;
 
-    border-radius: 100px;
+    background: var(--soft);
 
-    background: #ddd;
+    border-radius: 100px;
 
     overflow: hidden;
 }
 
-#progress-fill {
+
+.progress-fill {
+    width: 0;
     height: 100%;
-    width: 0%;
 
-    background: #16181d;
+    background: var(--dark);
 
-    transition: width .3s ease;
+    border-radius: inherit;
+
+    transition: width 0.25s ease;
 }
 
-section {
+
+/* SECTIONS */
+
+.habit-section {
     margin-bottom: 40px;
 }
 
-.section-title {
+
+.section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 16px;
+
     margin-bottom: 14px;
 }
+
+
+.section-label {
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.6px;
+
+    color: var(--muted);
+
+    margin-bottom: 5px;
+}
+
+
+h2 {
+    font-size: 22px;
+
+    letter-spacing: -0.5px;
+}
+
+
+.section-frequency {
+    color: var(--muted);
+
+    font-size: 12px;
+
+    padding-bottom: 2px;
+}
+
+
+/* HABITS */
 
 .habit-list {
     display: flex;
@@ -119,117 +262,253 @@ section {
     gap: 10px;
 }
 
+
 .habit-card {
     display: flex;
     align-items: center;
 
-    background: white;
+    gap: 14px;
 
-    padding: 16px;
+    min-height: 78px;
 
-    border-radius: 16px;
+    padding: 14px;
 
-    gap: 15px;
+    background: var(--card);
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
 }
 
+
 .habit-icon {
-    width: 44px;
-    height: 44px;
+    flex-shrink: 0;
 
-    border-radius: 12px;
-
-    background: #f2f2f2;
+    width: 46px;
+    height: 46px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 21px;
+    background: var(--soft);
+
+    border-radius: 14px;
+
+    font-size: 22px;
 }
 
-.habit-content {
+
+.habit-info {
     flex: 1;
+
+    min-width: 0;
 }
 
-.habit-content p {
-    font-size: 13px;
 
-    margin-top: 3px;
+.habit-name {
+    font-size: 15px;
+    font-weight: 700;
+
+    margin-bottom: 4px;
 }
 
-.habit-check {
-    width: 42px;
-    height: 42px;
 
-    border: none;
+.habit-description {
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+
+/* BOOLEAN CHECK */
+
+.check-button {
+    flex-shrink: 0;
+
+    width: 44px;
+    height: 44px;
+
+    border: 0;
 
     border-radius: 50%;
 
-    background: #ececec;
+    background: var(--soft);
 
-    font-size: 20px;
+    color: #a2a5ac;
+
+    font-size: 18px;
+    font-weight: 700;
 
     cursor: pointer;
 }
 
-.habit-check.completed {
-    background: #16181d;
+
+.check-button.completed {
+    background: var(--dark);
     color: white;
 }
 
-.metric-card {
+
+/* NUMBER */
+
+.number-control {
+    flex-shrink: 0;
+
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
+    gap: 7px;
+}
+
+
+.number-input {
+    width: 82px;
+    height: 42px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+
+    background: var(--soft);
+
+    color: var(--text);
+
+    padding: 0 10px;
+
+    text-align: center;
+
+    font-weight: 700;
+
+    outline: none;
+}
+
+
+.number-input:focus {
+    border-color: #9fa2aa;
     background: white;
-
-    border-radius: 16px;
-
-    padding: 18px;
 }
 
-.metric-icon {
-    font-size: 25px;
 
-    display: block;
+.unit-label {
+    width: 35px;
 
-    margin-bottom: 8px;
+    color: var(--muted);
+
+    font-size: 11px;
 }
 
-.metric-card p {
-    font-size: 13px;
 
-    margin-top: 4px;
-}
+/* COUNTER */
 
-.counter {
+.counter-control {
+    flex-shrink: 0;
+
     display: flex;
     align-items: center;
 
-    gap: 16px;
+    gap: 8px;
 }
 
-.counter button {
-    width: 40px;
-    height: 40px;
 
-    border: none;
+.counter-button {
+    width: 38px;
+    height: 38px;
+
+    border: 0;
+
+    background: var(--soft);
 
     border-radius: 10px;
 
-    background: #eee;
-
-    font-size: 22px;
-
     cursor: pointer;
+
+    font-size: 20px;
 }
 
-.counter span {
-    font-size: 25px;
-    font-weight: 700;
 
-    width: 30px;
+.counter-value {
+    min-width: 42px;
 
     text-align: center;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+
+/* COMPLETED CARD */
+
+.habit-card.completed {
+    border-color: #d2d4d9;
+}
+
+
+.habit-card.completed .habit-name::after {
+    content: " ✓";
+
+    font-weight: 800;
+}
+
+
+/* FOOTER */
+
+footer {
+    padding-top: 10px;
+
+    color: var(--muted);
+
+    text-align: center;
+
+    font-size: 11px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 520px) {
+
+    .app {
+        padding:
+            26px
+            15px
+            70px;
+    }
+
+
+    h1 {
+        font-size: 34px;
+    }
+
+
+    .score-card {
+        min-width: 90px;
+
+        padding: 13px;
+    }
+
+
+    .habit-card {
+        padding: 12px;
+
+        gap: 11px;
+    }
+
+
+    .habit-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+
+    .number-input {
+        width: 68px;
+    }
+
+
+    .unit-label {
+        display: none;
+    }
+
 }

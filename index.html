@@ -1,207 +1,205 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Momentum</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
+
 
 <body>
 
-    <header>
-        <div>
-            <p class="eyebrow">MOMENTUM</p>
-            <h1>Oggi</h1>
-            <p id="current-date"></p>
-        </div>
+    <div class="app">
 
-        <div class="score">
-            <span id="score-number">0%</span>
-            <small>completato</small>
-        </div>
-    </header>
+        <!-- HEADER -->
 
+        <header class="topbar">
 
-    <main>
+            <div>
+                <p class="brand">MOMENTUM</p>
 
-        <section class="progress-section">
+                <h1>Oggi</h1>
 
-            <div class="progress-info">
-                <span>Progresso giornaliero</span>
-                <span id="completed-counter">0 / 5</span>
+                <p
+                    id="current-date"
+                    class="current-date"
+                ></p>
             </div>
 
-            <div class="progress-bar">
-                <div id="progress-fill"></div>
+
+            <div class="score-card">
+
+                <span id="daily-score">
+                    0%
+                </span>
+
+                <small>
+                    completato
+                </small>
+
             </div>
 
-        </section>
+        </header>
 
 
-        <section>
+        <!-- DAILY PROGRESS -->
 
-            <div class="section-title">
+        <section class="overview-card">
+
+            <div class="overview-top">
+
                 <div>
-                    <p class="eyebrow">BUILD</p>
-                    <h2>Costruisci</h2>
+                    <p class="mini-label">
+                        DAILY SCORE
+                    </p>
+
+                    <strong id="daily-counter">
+                        0 / 7
+                    </strong>
                 </div>
+
+                <span id="daily-message">
+                    Iniziamo.
+                </span>
+
             </div>
 
 
-            <div class="habit-list">
+            <div class="progress-track">
 
-                <div class="habit-card">
-
-                    <div class="habit-icon">
-                        🏋️
-                    </div>
-
-                    <div class="habit-content">
-                        <h3>Allenamento</h3>
-                        <p>Target: 4 volte questa settimana</p>
-                    </div>
-
-                    <button class="habit-check">
-                        ✓
-                    </button>
-
-                </div>
-
-
-                <div class="habit-card">
-
-                    <div class="habit-icon">
-                        🚶
-                    </div>
-
-                    <div class="habit-content">
-                        <h3>Movimento</h3>
-                        <p>Raggiungi il tuo target giornaliero</p>
-                    </div>
-
-                    <button class="habit-check">
-                        ✓
-                    </button>
-
-                </div>
-
-
-                <div class="habit-card">
-
-                    <div class="habit-icon">
-                        📚
-                    </div>
-
-                    <div class="habit-content">
-                        <h3>Lettura</h3>
-                        <p>20 minuti</p>
-                    </div>
-
-                    <button class="habit-check">
-                        ✓
-                    </button>
-
-                </div>
+                <div
+                    id="daily-progress"
+                    class="progress-fill"
+                ></div>
 
             </div>
 
         </section>
 
 
-        <section>
+        <!-- DAILY -->
 
-            <div class="section-title">
+        <section class="habit-section">
+
+            <div class="section-heading">
+
                 <div>
-                    <p class="eyebrow">MAINTAIN</p>
-                    <h2>Mantieni</h2>
+                    <p class="section-label">
+                        🌞 DAILY
+                    </p>
+
+                    <h2>
+                        Ogni giorno
+                    </h2>
                 </div>
+
+                <span class="section-frequency">
+                    Oggi
+                </span>
+
             </div>
 
 
-            <div class="habit-list">
-
-                <div class="habit-card">
-
-                    <div class="habit-icon">
-                        💧
-                    </div>
-
-                    <div class="habit-content">
-                        <h3>Acqua</h3>
-                        <p>Target giornaliero</p>
-                    </div>
-
-                    <button class="habit-check">
-                        ✓
-                    </button>
-
-                </div>
-
-
-                <div class="habit-card">
-
-                    <div class="habit-icon">
-                        😴
-                    </div>
-
-                    <div class="habit-content">
-                        <h3>Sonno</h3>
-                        <p>Almeno 7 ore</p>
-                    </div>
-
-                    <button class="habit-check">
-                        ✓
-                    </button>
-
-                </div>
-
-            </div>
+            <div
+                id="daily-list"
+                class="habit-list"
+            ></div>
 
         </section>
 
 
-        <section>
+        <!-- WEEKLY -->
 
-            <div class="section-title">
+        <section class="habit-section">
+
+            <div class="section-heading">
+
                 <div>
-                    <p class="eyebrow">CONTROL</p>
-                    <h2>Tieni sotto controllo</h2>
+                    <p class="section-label">
+                        📅 WEEKLY
+                    </p>
+
+                    <h2>
+                        Questa settimana
+                    </h2>
                 </div>
+
+                <span
+                    id="weekly-score"
+                    class="section-frequency"
+                >
+                    0 / 2
+                </span>
+
             </div>
 
 
-            <div class="metric-card">
-
-                <div>
-                    <span class="metric-icon">🚬</span>
-                    <h3>Sigarette</h3>
-                    <p>Quante oggi?</p>
-                </div>
-
-                <div class="counter">
-
-                    <button id="minus-cigarette">−</button>
-
-                    <span id="cigarette-count">
-                        0
-                    </span>
-
-                    <button id="plus-cigarette">+</button>
-
-                </div>
-
-            </div>
+            <div
+                id="weekly-list"
+                class="habit-list"
+            ></div>
 
         </section>
 
 
-    </main>
+        <!-- MONTHLY -->
+
+        <section class="habit-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <p class="section-label">
+                        🗓️ MONTHLY
+                    </p>
+
+                    <h2>
+                        Questo mese
+                    </h2>
+                </div>
+
+                <span
+                    id="monthly-score"
+                    class="section-frequency"
+                >
+                    0 / 2
+                </span>
+
+            </div>
+
+
+            <div
+                id="monthly-list"
+                class="habit-list"
+            ></div>
+
+        </section>
+
+
+        <footer>
+
+            <p>
+                Momentum • costruisci costanza, non perfezione.
+            </p>
+
+        </footer>
+
+    </div>
 
 
     <script src="app.js"></script>
 
 </body>
+
 </html>
