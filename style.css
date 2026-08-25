@@ -1916,3 +1916,269 @@ footer {
     }
 
 }
+
+/* =========================
+   MOMENTUM v0.8
+   VISUAL ANALYTICS
+========================= */
+
+.analytics-section {
+    margin-top: 38px;
+}
+
+
+.score-chart-card,
+.heatmap-card {
+    background: var(--card);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 19px;
+
+    padding: 17px;
+}
+
+
+.score-chart-card {
+    margin-bottom: 34px;
+}
+
+
+.chart-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+
+.chart-main-value {
+    display: block;
+
+    font-size: 30px;
+
+    letter-spacing: -1px;
+}
+
+
+.chart-trend-badge {
+    padding: 7px 10px;
+
+    border-radius: 100px;
+
+    background: var(--soft);
+
+    color: var(--muted);
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.chart-trend-badge.positive {
+    background: #e1e9e2;
+    color: #344d38;
+}
+
+
+.chart-trend-badge.negative {
+    background: #f0e4e2;
+    color: #74443d;
+}
+
+
+.score-chart-wrapper {
+    width: 100%;
+
+    height: 210px;
+}
+
+
+.score-chart {
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+}
+
+
+.chart-grid-line {
+    stroke: var(--border);
+
+    stroke-width: 1;
+}
+
+
+.score-chart-line {
+    fill: none;
+
+    stroke: var(--dark);
+
+    stroke-width: 3;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.score-chart-point {
+    fill: var(--card);
+
+    stroke: var(--dark);
+
+    stroke-width: 3;
+}
+
+
+.chart-axis-labels {
+    display: flex;
+    justify-content: space-between;
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    margin-top: 8px;
+}
+
+
+.analytics-activity-heading {
+    margin-top: 6px;
+}
+
+
+.heatmap-card {
+    margin-bottom: 36px;
+
+    overflow: hidden;
+}
+
+
+.activity-heatmap {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+
+    gap: 5px;
+}
+
+
+.heatmap-week {
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-rows:
+        repeat(7, 1fr);
+
+    gap: 5px;
+}
+
+
+.heatmap-cell {
+    width: 100%;
+
+    aspect-ratio: 1;
+
+    border-radius: 4px;
+
+    background: var(--soft);
+}
+
+
+.heatmap-cell.level-0,
+.heatmap-level.level-0 {
+    background: var(--soft);
+}
+
+
+.heatmap-cell.level-1,
+.heatmap-level.level-1 {
+    background: #e6e7e9;
+}
+
+
+.heatmap-cell.level-2,
+.heatmap-level.level-2 {
+    background: #cfd4cf;
+}
+
+
+.heatmap-cell.level-3,
+.heatmap-level.level-3 {
+    background: #929e94;
+}
+
+
+.heatmap-cell.level-4,
+.heatmap-level.level-4 {
+    background: var(--dark);
+}
+
+
+.heatmap-cell.future {
+    background: transparent;
+
+    border:
+        1px dashed
+        var(--border);
+}
+
+
+.heatmap-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 5px;
+
+    margin-top: 13px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+}
+
+
+.heatmap-level {
+    width: 11px;
+    height: 11px;
+
+    display: inline-block;
+
+    border-radius: 3px;
+}
+
+
+@media (max-width: 520px) {
+
+    .score-chart-wrapper {
+        height: 175px;
+    }
+
+
+    .score-chart-card,
+    .heatmap-card {
+        padding: 14px;
+    }
+
+
+    .activity-heatmap,
+    .heatmap-week {
+        gap: 3px;
+    }
+
+
+    .heatmap-cell {
+        border-radius: 3px;
+    }
+
+}

@@ -5168,6 +5168,8 @@ function renderStats() {
             )} / 4`
             : "Disattivato";
 
+            renderVisualAnalytics();
+
             renderGamification();
 
         }
@@ -5783,6 +5785,896 @@ function importMomentumBackup(
     reader.readAsText(
         file
     );
+
+}
+
+/* =========================================
+   VISUAL ANALYTICS — v0.8
+========================================= */
+
+function createAnalyticsSection() {
+
+    if (
+        document.getElementById(
+            "momentum-analytics-section"
+        )
+    ) {
+        return;
+    }
+
+
+    const statsGrid =
+        document.querySelector(
+            "#page-stats .stats-grid"
+        );
+
+
+    if (!statsGrid) {
+        return;
+    }
+
+
+    const section =
+        document.createElement(
+            "section"
+        );
+
+
+    section.id =
+        "momentum-analytics-section";
+
+
+    section.className =
+        "analytics-section";
+
+
+    section.innerHTML = `
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="section-label">
+                    📈 PERFORMANCE
+                </p>
+
+                <h2>
+                    Ultimi 30 giorni
+                </h2>
+
+            </div>
+
+            <span class="section-frequency">
+                Daily Score
+            </span>
+
+        </div>
+
+
+        <article class="score-chart-card">
+
+            <div class="chart-summary">
+
+                <div>
+
+                    <p class="mini-label">
+                        SCORE MEDIO
+                    </p>
+
+                    <strong
+                        id="chart-average-score"
+                        class="chart-main-value"
+                    >
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div
+                    id="chart-trend-badge"
+                    class="chart-trend-badge"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="score-chart-wrapper">
+
+                <svg
+                    id="score-chart"
+                    class="score-chart"
+                    viewBox="0 0 600 220"
+                    preserveAspectRatio="none"
+                    aria-label="Andamento Daily Score ultimi 30 giorni"
+                ></svg>
+
+            </div>
+
+
+            <div class="chart-axis-labels">
+
+                <span>
+                    30 giorni fa
+                </span>
+
+                <span>
+                    Oggi
+                </span>
+
+            </div>
+
+        </article>
+
+
+
+        <div class="section-heading analytics-activity-heading">
+
+            <div>
+
+                <p class="section-label">
+                    ▦ ACTIVITY
+                </p>
+
+                <h2>
+                    Heatmap
+                </h2>
+
+            </div>
+
+            <span class="section-frequency">
+                Ultime 12 settimane
+            </span>
+
+        </div>
+
+
+        <article class="heatmap-card">
+
+            <div
+                id="activity-heatmap"
+                class="activity-heatmap"
+            ></div>
+
+
+            <div class="heatmap-legend">
+
+                <span>
+                    Meno
+                </span>
+
+                <i class="heatmap-level level-0"></i>
+                <i class="heatmap-level level-1"></i>
+                <i class="heatmap-level level-2"></i>
+                <i class="heatmap-level level-3"></i>
+                <i class="heatmap-level level-4"></i>
+
+                <span>
+                    Più
+                </span>
+
+            </div>
+
+        </article>
+
+    `;
+
+
+    statsGrid.insertAdjacentElement(
+        "afterend",
+        section
+    );
+
+}
+
+/* =========================================
+   SCORE CHART
+========================================= */
+
+function getDailyScoresForPeriod(
+    days
+) {
+
+    const result = [];
+
+
+    const today =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+
+    for (
+        let offset = days - 1;
+        offset >= 0;
+        offset--
+    ) {
+
+        const date =
+            addDaysToDate(
+                today,
+                -offset
+            );
+
+
+        const key =
+            formatDateKey(
+                date
+            );
+
+
+        const score =
+            calculateDailyScoreForKey(
+                key
+            );
+
+
+        result.push({
+            key,
+            date,
+            score
+        });
+
+    }
+
+
+    return result;
+
+}
+
+
+
+function renderScoreChart() {
+
+    const svg =
+        document.getElementById(
+            "score-chart"
+        );
+
+
+    if (!svg) {
+        return;
+    }
+
+
+    const values =
+        getDailyScoresForPeriod(
+            30
+        );
+
+
+    const validScores =
+        values
+            .filter(
+                item =>
+                    item.score !== null
+            )
+            .map(
+                item =>
+                    item.score
+            );
+
+
+    const averageScore =
+        average(
+            validScores
+        );
+
+
+    const averageElement =
+        document.getElementById(
+            "chart-average-score"
+        );
+
+
+    averageElement.textContent =
+        averageScore === null
+            ? "—"
+            : `${Math.round(
+                averageScore
+            )}%`;
+
+
+    svg.innerHTML =
+        "";
+
+
+    /*
+    Linee orizzontali:
+    100 / 80 / 50 / 0
+    */
+
+    [
+        100,
+        80,
+        50,
+        0
+    ].forEach(
+        score => {
+
+            const y =
+                200 -
+                (
+                    score /
+                    100
+                ) * 180;
+
+
+            const line =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "line"
+                );
+
+
+            line.setAttribute(
+                "x1",
+                "20"
+            );
+
+            line.setAttribute(
+                "x2",
+                "580"
+            );
+
+            line.setAttribute(
+                "y1",
+                y
+            );
+
+            line.setAttribute(
+                "y2",
+                y
+            );
+
+            line.setAttribute(
+                "class",
+                "chart-grid-line"
+            );
+
+
+            svg.appendChild(
+                line
+            );
+
+        }
+    );
+
+
+    const points = [];
+
+
+    values.forEach(
+        (item, index) => {
+
+            if (
+                item.score === null
+            ) {
+                return;
+            }
+
+
+            const x =
+                20 +
+                (
+                    index /
+                    29
+                ) * 560;
+
+
+            const y =
+                200 -
+                (
+                    item.score /
+                    100
+                ) * 180;
+
+
+            points.push(
+                `${x},${y}`
+            );
+
+        }
+    );
+
+
+    if (
+        points.length >
+        1
+    ) {
+
+        const polyline =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "polyline"
+            );
+
+
+        polyline.setAttribute(
+            "points",
+            points.join(" ")
+        );
+
+
+        polyline.setAttribute(
+            "class",
+            "score-chart-line"
+        );
+
+
+        svg.appendChild(
+            polyline
+        );
+
+    }
+
+
+    values.forEach(
+        (item, index) => {
+
+            if (
+                item.score === null
+            ) {
+                return;
+            }
+
+
+            const x =
+                20 +
+                (
+                    index /
+                    29
+                ) * 560;
+
+
+            const y =
+                200 -
+                (
+                    item.score /
+                    100
+                ) * 180;
+
+
+            const circle =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "circle"
+                );
+
+
+            circle.setAttribute(
+                "cx",
+                x
+            );
+
+
+            circle.setAttribute(
+                "cy",
+                y
+            );
+
+
+            circle.setAttribute(
+                "r",
+                "4"
+            );
+
+
+            circle.setAttribute(
+                "class",
+                "score-chart-point"
+            );
+
+
+            const title =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "title"
+                );
+
+
+            title.textContent =
+                `${
+                    item.date
+                        .toLocaleDateString(
+                            "it-IT",
+                            {
+                                day:
+                                    "numeric",
+                                month:
+                                    "short"
+                            }
+                        )
+                }: ${item.score}%`;
+
+
+            circle.appendChild(
+                title
+            );
+
+
+            svg.appendChild(
+                circle
+            );
+
+        }
+    );
+
+
+    renderScoreTrendBadge();
+
+}
+
+function averageScoreBetweenOffsets(
+    startOffset,
+    endOffset
+) {
+
+    const values = [];
+
+
+    for (
+        let offset =
+            startOffset;
+        offset <=
+            endOffset;
+        offset++
+    ) {
+
+        const date =
+            addDaysToDate(
+                now,
+                -offset
+            );
+
+
+        const score =
+            calculateDailyScoreForKey(
+                formatDateKey(
+                    date
+                )
+            );
+
+
+        if (
+            score !== null
+        ) {
+
+            values.push(
+                score
+            );
+
+        }
+
+    }
+
+
+    return average(
+        values
+    );
+
+}
+
+
+
+function renderScoreTrendBadge() {
+
+    const badge =
+        document.getElementById(
+            "chart-trend-badge"
+        );
+
+
+    if (!badge) {
+        return;
+    }
+
+
+    const recent =
+        averageScoreBetweenOffsets(
+            0,
+            6
+        );
+
+
+    const previous =
+        averageScoreBetweenOffsets(
+            7,
+            13
+        );
+
+
+    badge.classList.remove(
+        "positive",
+        "negative",
+        "neutral"
+    );
+
+
+    if (
+        recent === null ||
+        previous === null
+    ) {
+
+        badge.textContent =
+            "Dati insufficienti";
+
+
+        badge.classList.add(
+            "neutral"
+        );
+
+
+        return;
+
+    }
+
+
+    const difference =
+        Math.round(
+            recent -
+            previous
+        );
+
+
+    if (
+        difference > 0
+    ) {
+
+        badge.textContent =
+            `↑ +${difference} pt`;
+
+
+        badge.classList.add(
+            "positive"
+        );
+
+    }
+
+    else if (
+        difference < 0
+    ) {
+
+        badge.textContent =
+            `↓ ${difference} pt`;
+
+
+        badge.classList.add(
+            "negative"
+        );
+
+    }
+
+    else {
+
+        badge.textContent =
+            "→ stabile";
+
+
+        badge.classList.add(
+            "neutral"
+        );
+
+    }
+
+}
+
+/* =========================================
+   ACTIVITY HEATMAP
+========================================= */
+
+function getHeatmapLevel(
+    score
+) {
+
+    if (
+        score === null
+    ) {
+        return 0;
+    }
+
+
+    if (
+        score < 50
+    ) {
+        return 1;
+    }
+
+
+    if (
+        score < 80
+    ) {
+        return 2;
+    }
+
+
+    if (
+        score < 100
+    ) {
+        return 3;
+    }
+
+
+    return 4;
+
+}
+
+
+
+function renderActivityHeatmap() {
+
+    const container =
+        document.getElementById(
+            "activity-heatmap"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    const today =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+
+    const currentWeekday =
+        today.getDay() === 0
+            ? 7
+            : today.getDay();
+
+
+    /*
+    Partiamo dal lunedì
+    di 11 settimane fa.
+    */
+
+    const currentMonday =
+        addDaysToDate(
+            today,
+            -(currentWeekday - 1)
+        );
+
+
+    const start =
+        addDaysToDate(
+            currentMonday,
+            -(11 * 7)
+        );
+
+
+    for (
+        let week = 0;
+        week < 12;
+        week++
+    ) {
+
+        const column =
+            document.createElement(
+                "div"
+            );
+
+
+        column.className =
+            "heatmap-week";
+
+
+        for (
+            let day = 0;
+            day < 7;
+            day++
+        ) {
+
+            const date =
+                addDaysToDate(
+                    start,
+                    week * 7 +
+                    day
+                );
+
+
+            const cell =
+                document.createElement(
+                    "div"
+                );
+
+
+            cell.className =
+                "heatmap-cell";
+
+
+            /*
+            Giorni futuri:
+            non mostriamo dati.
+            */
+
+            if (
+                date > today
+            ) {
+
+                cell.classList.add(
+                    "future"
+                );
+
+            }
+            else {
+
+                const key =
+                    formatDateKey(
+                        date
+                    );
+
+
+                const score =
+                    calculateDailyScoreForKey(
+                        key
+                    );
+
+
+                const level =
+                    getHeatmapLevel(
+                        score
+                    );
+
+
+                cell.classList.add(
+                    `level-${level}`
+                );
+
+
+                cell.title =
+                    `${
+                        date
+                            .toLocaleDateString(
+                                "it-IT",
+                                {
+                                    day:
+                                        "numeric",
+                                    month:
+                                        "short"
+                                }
+                            )
+                    } • ${
+                        score === null
+                            ? "Nessun dato"
+                            : `${score}%`
+                    }`;
+
+            }
+
+
+            column.appendChild(
+                cell
+            );
+
+        }
+
+
+        container.appendChild(
+            column
+        );
+
+    }
+
+}
+
+function renderVisualAnalytics() {
+
+    renderScoreChart();
+
+    renderActivityHeatmap();
 
 }
 
@@ -6972,6 +7864,8 @@ createNewHabitModal();
 createNewHabitButton();
 
 createBackupSection();
+
+createAnalyticsSection();
 
 createStreakSection();
 
