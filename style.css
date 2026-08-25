@@ -493,12 +493,6 @@ h2 {
 }
 
 
-.habit-card.completed .habit-name::after {
-    content: " ✓";
-
-    font-weight: 800;
-}
-
 
 /* =========================
    CALENDAR
@@ -2181,4 +2175,148 @@ footer {
         border-radius: 3px;
     }
 
+}
+
+/* =========================
+   MOMENTUM v0.9
+   CLOUD LOGIN
+========================= */
+
+.cloud-login-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 5000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 22px;
+
+    background:
+        rgba(245, 245, 243, 0.97);
+
+    backdrop-filter:
+        blur(12px);
+}
+
+
+.cloud-login-overlay.hidden {
+    display: none;
+}
+
+
+.cloud-login-card {
+    width: 100%;
+    max-width: 390px;
+
+    padding: 30px 26px;
+
+    background: var(--card);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 26px;
+
+    box-shadow:
+        0 24px 80px
+        rgba(0, 0, 0, 0.10);
+}
+
+
+.cloud-login-logo {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 22px;
+
+    border-radius: 16px;
+
+    background: var(--dark);
+    color: white;
+
+    font-size: 23px;
+    font-weight: 800;
+}
+
+
+.cloud-login-card h1 {
+    margin-top: 4px;
+
+    font-size: 30px;
+
+    letter-spacing: -1px;
+}
+
+
+.cloud-login-description {
+    margin-top: 8px;
+    margin-bottom: 26px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+.cloud-login-button {
+    width: 100%;
+    min-height: 48px;
+
+    margin-top: 7px;
+
+    border: 0;
+    border-radius: 13px;
+
+    background: var(--dark);
+    color: white;
+
+    font-size: 14px;
+    font-weight: 750;
+
+    cursor: pointer;
+}
+
+
+.cloud-login-button:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+
+.cloud-login-message {
+    min-height: 22px;
+
+    margin-top: 4px;
+
+    font-size: 11px;
+}
+
+
+.cloud-login-message.error {
+    color: #b42318;
+}
+
+
+.cloud-login-message.success {
+    color: #32623b;
+}
+
+
+.cloud-login-footer {
+    margin-top: 22px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 10px;
 }

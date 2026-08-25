@@ -845,6 +845,42 @@ In questo modo NON perdiamo
 i progressi già registrati.
 */
 
+/* =========================================
+   SUPABASE CLOUD — v0.9
+========================================= */
+
+const SUPABASE_URL =
+    window.MOMENTUM_SUPABASE_URL;
+
+const SUPABASE_PUBLISHABLE_KEY =
+    window.MOMENTUM_SUPABASE_PUBLISHABLE_KEY;
+
+const momentumSupabase =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true
+            }
+        }
+    );
+
+let cloudUser = null;
+
+let cloudReady = false;
+
+let cloudIsApplyingRemote = false;
+
+let cloudSyncTimer = null;
+
+const CLOUD_DIRTY_KEY =
+    "momentum_cloud_dirty_v1";
+
+const CLOUD_LAST_SYNC_KEY =
+    "momentum_cloud_last_sync_v1";
+
 const STORAGE_KEY =
     "momentum_v02";
 
@@ -1117,6 +1153,30 @@ function saveData() {
         JSON.stringify(data)
     );
 
+    /*
+    Prima del login oppure mentre stiamo
+    applicando dati provenienti dal cloud
+    salviamo solo localmente.
+    */
+
+    if (
+        !cloudReady ||
+        cloudIsApplyingRemote
+    ) {
+        return;
+    }
+
+    /*
+    Segnaliamo che il dispositivo
+    contiene modifiche da sincronizzare.
+    */
+
+    localStorage.setItem(
+        CLOUD_DIRTY_KEY,
+        "1"
+    );
+
+    scheduleCloudPush();
 }
 
 
@@ -7855,6 +7915,750 @@ function renderHabitStreaks() {
 }
 
 /* =========================================
+   CLOUD SYNC — v0.9C
+========================================= */
+
+function scheduleCloudPush() {
+
+    if (
+        !cloudReady ||
+        !cloudUser
+    ) {
+        return;
+    }
+
+    if (cloudSyncTimer) {
+
+        clearTimeout(
+            cloudSyncTimer
+        );
+
+    }
+
+    cloudSyncTimer =
+        setTimeout(
+            () => {
+                pushCloudState();
+            },
+            700
+        );
+}
+
+
+/* =========================================
+   LOCAL → CLOUD
+========================================= */
+
+async function pushCloudState() {
+
+    if (
+        !cloudUser ||
+        !navigator.onLine
+    ) {
+        return;
+    }
+
+    try {
+
+        const {
+            data: savedRow,
+            error
+        } =
+            await momentumSupabase
+                .from(
+                    "momentum_state"
+                )
+                .upsert(
+                    {
+                        user_id:
+                            cloudUser.id,
+
+                        data:
+                            data,
+
+                        updated_at:
+                            new Date()
+                                .toISOString()
+                    },
+                    {
+                        onConflict:
+                            "user_id"
+                    }
+                )
+                .select(
+                    "updated_at"
+                )
+                .single();
+
+        if (error) {
+            throw error;
+        }
+
+        localStorage.removeItem(
+            CLOUD_DIRTY_KEY
+        );
+
+        if (
+            savedRow &&
+            savedRow.updated_at
+        ) {
+
+            localStorage.setItem(
+                CLOUD_LAST_SYNC_KEY,
+                savedRow.updated_at
+            );
+
+        }
+
+        console.log(
+            "Momentum Cloud: sincronizzazione completata"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Momentum Cloud push error:",
+            error
+        );
+
+        /*
+        Non cancelliamo il flag dirty.
+        Verrà ritentata la sincronizzazione.
+        */
+
+    }
+}
+
+
+/* =========================================
+   APPLICA DATI CLOUD
+========================================= */
+
+function applyRemoteMomentumData(
+    remoteData,
+    updatedAt
+) {
+
+    cloudIsApplyingRemote =
+        true;
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(
+            remoteData
+        )
+    );
+
+    if (updatedAt) {
+
+        localStorage.setItem(
+            CLOUD_LAST_SYNC_KEY,
+            updatedAt
+        );
+
+    }
+
+    localStorage.removeItem(
+        CLOUD_DIRTY_KEY
+    );
+
+    cloudIsApplyingRemote =
+        false;
+
+    /*
+    Ricarichiamo Momentum perché habit,
+    statistiche e configurazioni vengano
+    ricostruite usando i dati cloud.
+    */
+
+    window.location.reload();
+}
+
+
+/* =========================================
+   CLOUD → LOCAL
+========================================= */
+
+async function pullCloudState() {
+
+    if (
+        !cloudUser ||
+        !navigator.onLine
+    ) {
+
+        cloudReady =
+            true;
+
+        return;
+    }
+
+    try {
+
+        const {
+            data: remoteRow,
+            error
+        } =
+            await momentumSupabase
+                .from(
+                    "momentum_state"
+                )
+                .select(
+                    "data, updated_at"
+                )
+                .eq(
+                    "user_id",
+                    cloudUser.id
+                )
+                .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        /*
+        CASO 1
+        Il cloud è ancora vuoto.
+
+        Questo è il primo dispositivo:
+        carichiamo su Supabase i dati
+        Momentum già presenti sul Mac.
+        */
+
+        if (!remoteRow) {
+
+            cloudReady =
+                true;
+
+            localStorage.setItem(
+                CLOUD_DIRTY_KEY,
+                "1"
+            );
+
+            await pushCloudState();
+
+            return;
+        }
+
+        const dirty =
+            localStorage.getItem(
+                CLOUD_DIRTY_KEY
+            ) === "1";
+
+        /*
+        CASO 2
+        Il dispositivo contiene modifiche
+        non ancora inviate.
+
+        Diamo priorità al locale.
+        */
+
+        if (dirty) {
+
+            cloudReady =
+                true;
+
+            await pushCloudState();
+
+            return;
+        }
+
+        const lastSync =
+            localStorage.getItem(
+                CLOUD_LAST_SYNC_KEY
+            );
+
+        /*
+        CASO 3
+        Abbiamo già esattamente questa
+        versione del cloud.
+        */
+
+        if (
+            lastSync &&
+            remoteRow.updated_at ===
+                lastSync
+        ) {
+
+            cloudReady =
+                true;
+
+            return;
+        }
+
+        /*
+        CASO 4
+        Il cloud contiene dati diversi.
+
+        Scarichiamo la versione cloud.
+        */
+
+        applyRemoteMomentumData(
+            remoteRow.data,
+            remoteRow.updated_at
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Momentum Cloud pull error:",
+            error
+        );
+
+        /*
+        Se Supabase non risponde,
+        Momentum continua a funzionare
+        normalmente in locale.
+        */
+
+        cloudReady =
+            true;
+    }
+}
+
+
+/* =========================================
+   INITIAL CLOUD SYNC
+========================================= */
+
+async function initializeCloudSync() {
+
+    if (!cloudUser) {
+        return;
+    }
+
+    cloudReady =
+        false;
+
+    await pullCloudState();
+
+    cloudReady =
+        true;
+}
+
+
+/* =========================================
+   MANUAL / AUTO RESYNC
+========================================= */
+
+async function syncCloudState() {
+
+    if (!cloudUser) {
+        return;
+    }
+
+    const dirty =
+        localStorage.getItem(
+            CLOUD_DIRTY_KEY
+        ) === "1";
+
+    if (dirty) {
+
+        await pushCloudState();
+
+    }
+    else {
+
+        await pullCloudState();
+
+    }
+}
+
+/* =========================================
+   CLOUD LOGIN — v0.9
+========================================= */
+
+function createCloudLoginOverlay() {
+
+    if (
+        document.getElementById(
+            "cloud-login-overlay"
+        )
+    ) {
+        return;
+    }
+
+    const overlay =
+        document.createElement(
+            "div"
+        );
+
+    overlay.id =
+        "cloud-login-overlay";
+
+    overlay.className =
+        "cloud-login-overlay";
+
+    overlay.innerHTML = `
+
+        <div class="cloud-login-card">
+
+            <div class="cloud-login-logo">
+                M
+            </div>
+
+            <p class="mini-label">
+                MOMENTUM CLOUD
+            </p>
+
+            <h1>
+                Bentornato
+            </h1>
+
+            <p class="cloud-login-description">
+                Accedi per sincronizzare Momentum
+                tra tutti i tuoi dispositivi.
+            </p>
+
+            <form id="cloud-login-form">
+
+                <label class="habit-edit-field">
+
+                    <span>Email</span>
+
+                    <input
+                        id="cloud-login-email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                        placeholder="Email"
+                    >
+
+                </label>
+
+                <label class="habit-edit-field">
+
+                    <span>Password</span>
+
+                    <input
+                        id="cloud-login-password"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                        placeholder="Password"
+                    >
+
+                </label>
+
+                <div
+                    id="cloud-login-message"
+                    class="cloud-login-message"
+                    aria-live="polite"
+                ></div>
+
+                <button
+                    id="cloud-login-button"
+                    class="cloud-login-button"
+                    type="submit"
+                >
+                    Accedi
+                </button>
+
+            </form>
+
+            <p class="cloud-login-footer">
+                ☁️ Momentum Cloud
+            </p>
+
+        </div>
+    `;
+
+    document.body.appendChild(
+        overlay
+    );
+
+    document
+        .getElementById(
+            "cloud-login-form"
+        )
+        .addEventListener(
+            "submit",
+            handleCloudLogin
+        );
+}
+
+
+/* =========================================
+   LOGIN MESSAGE
+========================================= */
+
+function setCloudLoginMessage(
+    message,
+    type = ""
+) {
+
+    const element =
+        document.getElementById(
+            "cloud-login-message"
+        );
+
+    if (!element) {
+        return;
+    }
+
+    element.textContent =
+        message;
+
+    element.className =
+        "cloud-login-message";
+
+    if (type) {
+
+        element.classList.add(
+            type
+        );
+
+    }
+}
+
+
+/* =========================================
+   SHOW / HIDE LOGIN
+========================================= */
+
+function showCloudLogin() {
+
+    const overlay =
+        document.getElementById(
+            "cloud-login-overlay"
+        );
+
+    if (overlay) {
+
+        overlay.classList.remove(
+            "hidden"
+        );
+
+    }
+}
+
+
+function hideCloudLogin() {
+
+    const overlay =
+        document.getElementById(
+            "cloud-login-overlay"
+        );
+
+    if (overlay) {
+
+        overlay.classList.add(
+            "hidden"
+        );
+
+    }
+}
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+async function handleCloudLogin(
+    event
+) {
+
+    event.preventDefault();
+
+    const email =
+        document
+            .getElementById(
+                "cloud-login-email"
+            )
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById(
+                "cloud-login-password"
+            )
+            .value;
+
+    const button =
+        document.getElementById(
+            "cloud-login-button"
+        );
+
+    button.disabled =
+        true;
+
+    button.textContent =
+        "Accesso...";
+
+    setCloudLoginMessage(
+        ""
+    );
+
+    try {
+
+        const {
+            data: loginData,
+            error
+        } =
+            await momentumSupabase
+                .auth
+                .signInWithPassword({
+                    email,
+                    password
+                });
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        cloudUser =
+            loginData.user;
+
+        await initializeCloudSync();
+
+        setCloudLoginMessage(
+            "Accesso effettuato.",
+            "success"
+        );
+
+        setTimeout(
+            () => {
+
+                hideCloudLogin();
+
+            },
+            300
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Momentum login error:",
+            error
+        );
+
+        setCloudLoginMessage(
+            "Email o password non corretti.",
+            "error"
+        );
+
+    }
+    finally {
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Accedi";
+
+    }
+}
+
+
+/* =========================================
+   INITIALIZE AUTH
+========================================= */
+
+async function initializeCloudAuth() {
+
+    createCloudLoginOverlay();
+
+    try {
+
+        const {
+            data: sessionData,
+            error
+        } =
+            await momentumSupabase
+                .auth
+                .getSession();
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        const session =
+            sessionData.session;
+
+        if (
+            session &&
+            session.user
+        ) {
+
+            cloudUser =
+                session.user;
+
+            hideCloudLogin();
+
+            await initializeCloudSync();
+
+
+            console.log(
+                "Momentum Cloud: autenticato"
+            );
+
+        }
+        else {
+
+            cloudUser =
+                null;
+
+            showCloudLogin();
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "Momentum Cloud initialization error:",
+            error
+        );
+
+        showCloudLogin();
+
+        setCloudLoginMessage(
+            "Impossibile collegarsi al cloud.",
+            "error"
+        );
+
+    }
+
+}
+
+/* =========================================
+   CLOUD AUTO RESYNC
+========================================= */
+
+window.addEventListener(
+    "online",
+    () => {
+
+        syncCloudState();
+
+    }
+);
+
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if (
+            document.visibilityState ===
+            "visible"
+        ) {
+
+            syncCloudState();
+
+        }
+
+    }
+);
+
+/* =========================================
    START
 ========================================= */
 createEditHabitModal();
@@ -7872,6 +8676,9 @@ createStreakSection();
 pageSubtitle.textContent =
     todayLabel();
 
+
+
+initializeCloudAuth();
 
 renderTodayHabits();
 
