@@ -1466,3 +1466,151 @@ footer {
     outline: 2px solid var(--dark);
     outline-offset: 2px;
 }
+
+/* =========================
+   MOMENTUM v0.6
+   BACKUP & RESTORE
+========================= */
+
+.backup-card {
+    margin-top: 16px;
+    margin-bottom: 30px;
+}
+
+
+.backup-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 16px;
+}
+
+
+.backup-icon {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--soft);
+
+    border-radius: 13px;
+
+    font-size: 21px;
+}
+
+
+.backup-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-top: 18px;
+
+    padding: 13px 14px;
+
+    background: var(--soft);
+
+    border-radius: 13px;
+}
+
+
+.backup-status span {
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+
+.backup-status strong {
+    font-size: 12px;
+
+    text-align: right;
+}
+
+
+.backup-actions {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 8px;
+
+    margin-top: 12px;
+}
+
+
+.primary-backup-button,
+.secondary-backup-button {
+    min-height: 46px;
+
+    padding: 0 12px;
+
+    border-radius: 12px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.primary-backup-button {
+    border: 0;
+
+    background: var(--dark);
+    color: white;
+}
+
+
+.secondary-backup-button {
+    border:
+        1px solid
+        var(--border);
+
+    background:
+        var(--soft);
+
+    color:
+        var(--text);
+}
+
+
+.backup-message {
+    min-height: 18px;
+
+    margin-top: 10px;
+
+    font-size: 11px;
+    line-height: 1.4;
+
+    color: var(--muted);
+}
+
+
+.backup-message.success {
+    color: var(--text);
+}
+
+
+.backup-message.error {
+    color: #b42318;
+}
+
+
+@media (max-width: 520px) {
+
+    .backup-actions {
+        grid-template-columns:
+            1fr;
+    }
+
+}

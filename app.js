@@ -5170,7 +5170,619 @@ function renderStats() {
 
 }
 
+/* =========================================
+   BACKUP & RESTORE — v0.6
+========================================= */
 
+function formatBackupDate(isoDate) {
+
+    if (!isoDate) {
+        return "Mai";
+    }
+
+
+    const date =
+        new Date(isoDate);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return "Mai";
+    }
+
+
+    return date.toLocaleString(
+        "it-IT",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+/* =========================================
+   CREA SEZIONE BACKUP
+========================================= */
+
+function createBackupSection() {
+
+    if (
+        document.getElementById(
+            "momentum-backup-section"
+        )
+    ) {
+        return;
+    }
+
+
+    const habitsPage =
+        document.getElementById(
+            "page-habits"
+        );
+
+
+    if (!habitsPage) {
+        return;
+    }
+
+
+    const section =
+        document.createElement(
+            "section"
+        );
+
+
+    section.id =
+        "momentum-backup-section";
+
+
+    section.className =
+        "info-card backup-card";
+
+
+    section.innerHTML = `
+
+        <div class="backup-heading">
+
+            <div>
+
+                <p class="mini-label">
+                    DATA & BACKUP
+                </p>
+
+                <h2>
+                    Proteggi i tuoi dati
+                </h2>
+
+            </div>
+
+            <span class="backup-icon">
+                💾
+            </span>
+
+        </div>
+
+
+        <p class="info-text">
+
+            Esporta periodicamente una copia
+            dello storico di Momentum.
+            Il backup contiene habit,
+            progressi, configurazioni
+            e personalizzazioni.
+
+        </p>
+
+
+        <div class="backup-status">
+
+            <span>
+                Ultimo backup
+            </span>
+
+            <strong id="last-backup-date">
+                Mai
+            </strong>
+
+        </div>
+
+
+        <div class="backup-actions">
+
+            <button
+                id="export-backup-button"
+                class="primary-backup-button"
+                type="button"
+            >
+                ↓ Esporta backup
+            </button>
+
+
+            <button
+                id="import-backup-button"
+                class="secondary-backup-button"
+                type="button"
+            >
+                ↑ Importa backup
+            </button>
+
+        </div>
+
+
+        <input
+            id="backup-file-input"
+            type="file"
+            accept=".json,application/json"
+            hidden
+        >
+
+
+        <div
+            id="backup-message"
+            class="backup-message"
+            aria-live="polite"
+        ></div>
+
+    `;
+
+
+    habitsPage.appendChild(
+        section
+    );
+
+
+    document
+        .getElementById(
+            "export-backup-button"
+        )
+        .addEventListener(
+            "click",
+            exportMomentumBackup
+        );
+
+
+    document
+        .getElementById(
+            "import-backup-button"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                document
+                    .getElementById(
+                        "backup-file-input"
+                    )
+                    .click();
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "backup-file-input"
+        )
+        .addEventListener(
+            "change",
+            importMomentumBackup
+        );
+
+
+    updateBackupStatus();
+
+}
+
+
+/* =========================================
+   AGGIORNA STATO BACKUP
+========================================= */
+
+function updateBackupStatus() {
+
+    const element =
+        document.getElementById(
+            "last-backup-date"
+        );
+
+
+    if (!element) {
+        return;
+    }
+
+
+    const lastBackup =
+        data.settings
+            ?.lastBackupAt;
+
+
+    element.textContent =
+        formatBackupDate(
+            lastBackup
+        );
+
+}
+
+
+/* =========================================
+   MESSAGGIO BACKUP
+========================================= */
+
+function showBackupMessage(
+    message,
+    type = "success"
+) {
+
+    const element =
+        document.getElementById(
+            "backup-message"
+        );
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.textContent =
+        message;
+
+
+    element.classList.remove(
+        "success",
+        "error"
+    );
+
+
+    element.classList.add(
+        type
+    );
+
+}
+
+
+/* =========================================
+   EXPORT
+========================================= */
+
+function exportMomentumBackup() {
+
+    const exportedAt =
+        new Date()
+            .toISOString();
+
+
+    if (!data.settings) {
+        data.settings = {};
+    }
+
+
+    data.settings.lastBackupAt =
+        exportedAt;
+
+
+    saveData();
+
+
+    const backup = {
+
+        app:
+            "Momentum",
+
+        backupVersion:
+            1,
+
+        exportedAt,
+
+        storageKey:
+            STORAGE_KEY,
+
+        data:
+            data
+
+    };
+
+
+    const json =
+        JSON.stringify(
+            backup,
+            null,
+            2
+        );
+
+
+    const blob =
+        new Blob(
+            [json],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    const date =
+        new Date();
+
+
+    const dateString =
+        [
+            date.getFullYear(),
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0"),
+            String(
+                date.getDate()
+            ).padStart(2, "0")
+        ].join("-");
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        `momentum-backup-${dateString}.json`;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+
+    updateBackupStatus();
+
+
+    showBackupMessage(
+        "Backup esportato correttamente."
+    );
+
+}
+
+
+/* =========================================
+   VALIDAZIONE BACKUP
+========================================= */
+
+function isValidMomentumData(
+    candidate
+) {
+
+    if (
+        !candidate ||
+        typeof candidate !==
+            "object"
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !candidate.daily ||
+        typeof candidate.daily !==
+            "object"
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !candidate.weekly ||
+        typeof candidate.weekly !==
+            "object"
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        !candidate.monthly ||
+        typeof candidate.monthly !==
+            "object"
+    ) {
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================
+   IMPORT
+========================================= */
+
+function importMomentumBackup(
+    event
+) {
+
+    const input =
+        event.target;
+
+
+    const file =
+        input.files?.[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        () => {
+
+            try {
+
+                const parsed =
+                    JSON.parse(
+                        reader.result
+                    );
+
+
+                /*
+                Supportiamo sia il formato
+                nuovo con { data: ... }
+                sia un eventuale JSON
+                contenente direttamente
+                i dati di Momentum.
+                */
+
+                const importedData =
+                    parsed.data &&
+                    typeof parsed.data ===
+                        "object"
+                        ? parsed.data
+                        : parsed;
+
+
+                if (
+                    !isValidMomentumData(
+                        importedData
+                    )
+                ) {
+
+                    throw new Error(
+                        "Formato backup non valido."
+                    );
+
+                }
+
+
+                const confirmed =
+                    window.confirm(
+                        "Importare questo backup?\n\nI dati attualmente presenti in Momentum verranno sostituiti dal contenuto del backup."
+                    );
+
+
+                if (!confirmed) {
+
+                    input.value =
+                        "";
+
+                    return;
+
+                }
+
+
+                if (
+                    !importedData.settings
+                ) {
+
+                    importedData.settings =
+                        {};
+
+                }
+
+
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(
+                        importedData
+                    )
+                );
+
+
+                showBackupMessage(
+                    "Backup importato. Momentum verrà ricaricato."
+                );
+
+
+                setTimeout(
+                    () => {
+
+                        window.location.reload();
+
+                    },
+                    500
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                showBackupMessage(
+                    "Impossibile importare il file: backup non valido.",
+                    "error"
+                );
+
+            }
+
+
+            input.value =
+                "";
+
+        };
+
+
+    reader.onerror =
+        () => {
+
+            showBackupMessage(
+                "Errore durante la lettura del file.",
+                "error"
+            );
+
+
+            input.value =
+                "";
+
+        };
+
+
+    reader.readAsText(
+        file
+    );
+
+}
 
 /* =========================================
    START
@@ -5180,6 +5792,8 @@ createEditHabitModal();
 createNewHabitModal();
 
 createNewHabitButton();
+
+createBackupSection();
 
 pageSubtitle.textContent =
     todayLabel();
