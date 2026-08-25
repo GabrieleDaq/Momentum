@@ -2,6 +2,43 @@
 <html lang="it">
 
 <head>
+    <link
+    rel="manifest"
+    href="./manifest.webmanifest"
+>
+
+<meta
+    name="theme-color"
+    content="#1f2024"
+>
+
+<meta
+    name="mobile-web-app-capable"
+    content="yes"
+>
+
+<meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+>
+
+<meta
+    name="apple-mobile-web-app-title"
+    content="Momentum"
+>
+
+<meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
+>
+
+<link
+    rel="apple-touch-icon"
+    href="./icon-192.png"
+>
+
+
+    
     <meta charset="UTF-8">
 
     <meta
@@ -11,7 +48,7 @@
 
     <title>Momentum</title>
 
-    <link rel="stylesheet" href="style.css?v=0.9.1">
+    <link rel="stylesheet" href="style.css?v=1.0.0">
 </head>
 
 <body>
@@ -513,7 +550,43 @@
         "sb_publishable_HfOUrMhsFhf5mmPQvTRE3g_uWoy30K-";
 </script>
 
-<script src="app.js?v=0.9.1"></script>
+<script src="app.js?v=1.0.0"></script>
+
+<script>
+    if ("serviceWorker" in navigator) {
+
+        window.addEventListener(
+            "load",
+            () => {
+
+                navigator.serviceWorker
+                    .register("./service-worker.js")
+                    .then(
+                        registration => {
+
+                            console.log(
+                                "Momentum PWA attiva:",
+                                registration.scope
+                            );
+
+                        }
+                    )
+                    .catch(
+                        error => {
+
+                            console.error(
+                                "Service Worker error:",
+                                error
+                            );
+
+                        }
+                    );
+
+            }
+        );
+
+    }
+</script>
 
 </body>
 
