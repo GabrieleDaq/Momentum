@@ -901,6 +901,50 @@ if (!data.settings) {
 }
 
 /* =========================================
+   CUSTOM HABITS — v0.5B
+========================================= */
+
+if (!Array.isArray(data.settings.customHabits)) {
+    data.settings.customHabits = [];
+}
+
+
+/*
+Carichiamo nella libreria le habit
+create dall'utente nelle sessioni precedenti.
+*/
+
+data.settings.customHabits.forEach(customHabit => {
+
+    const alreadyExists =
+        habitLibrary.some(
+            habit =>
+                habit.id === customHabit.id
+        );
+
+    if (!alreadyExists) {
+
+        habitLibrary.push(
+            customHabit
+        );
+
+    }
+
+
+    /*
+    Serve anche per il pulsante Ripristina
+    dell'editor.
+    */
+
+    ORIGINAL_HABIT_DEFAULTS[
+        customHabit.id
+    ] = {
+        ...customHabit
+    };
+
+});
+
+/* =========================================
    CUSTOM HABIT SETTINGS — v0.5
 ========================================= */
 
@@ -3611,6 +3655,809 @@ function resetHabitEditor() {
 }
 
 /* =========================================
+   CREATE CUSTOM HABIT — v0.5B
+========================================= */
+
+function createNewHabitButton() {
+
+    if (
+        document.getElementById(
+            "create-new-habit-button"
+        )
+    ) {
+        return;
+    }
+
+
+    const infoCard =
+        document.querySelector(
+            "#page-habits .info-card"
+        );
+
+
+    if (!infoCard) {
+        return;
+    }
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.id =
+        "create-new-habit-button";
+
+
+    button.type =
+        "button";
+
+
+    button.className =
+        "create-habit-button";
+
+
+    button.textContent =
+        "+ Crea nuova abitudine";
+
+
+    button.addEventListener(
+        "click",
+        openCreateHabitModal
+    );
+
+
+    infoCard.appendChild(
+        button
+    );
+
+}
+
+
+
+/* =========================================
+   CREATE HABIT MODAL
+========================================= */
+
+function createNewHabitModal() {
+
+    if (
+        document.getElementById(
+            "create-habit-overlay"
+        )
+    ) {
+        return;
+    }
+
+
+    const overlay =
+        document.createElement(
+            "div"
+        );
+
+
+    overlay.id =
+        "create-habit-overlay";
+
+
+    overlay.className =
+        "habit-edit-overlay";
+
+
+    overlay.hidden =
+        true;
+
+
+    overlay.innerHTML = `
+
+        <div class="habit-edit-modal">
+
+            <div class="habit-edit-header">
+
+                <div>
+
+                    <p class="mini-label">
+                        NUOVA HABIT
+                    </p>
+
+                    <h2>
+                        Crea abitudine
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="close-create-habit"
+                    class="habit-edit-close"
+                    aria-label="Chiudi"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="create-habit-form">
+
+
+                <label class="habit-edit-field">
+
+                    <span>Nome</span>
+
+                    <input
+                        id="new-habit-name"
+                        type="text"
+                        maxlength="40"
+                        required
+                        placeholder="Es. Meditazione"
+                    >
+
+                </label>
+
+
+
+                <label class="habit-edit-field">
+
+                    <span>Icona</span>
+
+                    <input
+                        id="new-habit-icon"
+                        type="text"
+                        maxlength="4"
+                        value="⭐"
+                    >
+
+                </label>
+
+
+
+                <label class="habit-edit-field">
+
+                    <span>Categoria</span>
+
+                    <select
+                        id="new-habit-category"
+                        class="habit-select"
+                    >
+
+                        <option value="Corpo & salute">
+                            Corpo & salute
+                        </option>
+
+                        <option value="Mente & focus">
+                            Mente & focus
+                        </option>
+
+                        <option value="Benessere">
+                            Benessere
+                        </option>
+
+                        <option value="Organizzazione">
+                            Organizzazione
+                        </option>
+
+                        <option value="Finanze">
+                            Finanze
+                        </option>
+
+                        <option value="Crescita">
+                            Crescita
+                        </option>
+
+                        <option value="Vita sociale">
+                            Vita sociale
+                        </option>
+
+                        <option value="Altro">
+                            Altro
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+
+                <label class="habit-edit-field">
+
+                    <span>Frequenza</span>
+
+                    <select
+                        id="new-habit-frequency"
+                        class="habit-select"
+                    >
+
+                        <option value="daily">
+                            Giornaliera
+                        </option>
+
+                        <option value="weekly">
+                            Settimanale
+                        </option>
+
+                        <option value="monthly">
+                            Mensile
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+
+                <label class="habit-edit-field">
+
+                    <span>Come vuoi tracciarla?</span>
+
+                    <select
+                        id="new-habit-type"
+                        class="habit-select"
+                    >
+
+                        <option value="boolean">
+                            Fatto / Non fatto
+                        </option>
+
+                        <option value="number">
+                            Valore numerico
+                        </option>
+
+                        <option value="counter">
+                            Contatore
+                        </option>
+
+                        <option value="limit">
+                            Limite massimo
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+
+                <div
+                    id="new-habit-numeric-fields"
+                    class="habit-edit-row"
+                >
+
+                    <label class="habit-edit-field">
+
+                        <span>Target</span>
+
+                        <input
+                            id="new-habit-target"
+                            type="number"
+                            min="0"
+                            step="0.5"
+                            value="1"
+                        >
+
+                    </label>
+
+
+                    <label class="habit-edit-field">
+
+                        <span>Unità</span>
+
+                        <input
+                            id="new-habit-unit"
+                            type="text"
+                            maxlength="12"
+                            placeholder="min, h, km..."
+                        >
+
+                    </label>
+
+                </div>
+
+
+
+                <label class="habit-edit-field">
+
+                    <span>Nota opzionale</span>
+
+                    <input
+                        id="new-habit-description"
+                        type="text"
+                        maxlength="100"
+                        placeholder="Breve descrizione"
+                    >
+
+                </label>
+
+
+
+                <div class="habit-edit-note">
+
+                    La nuova abitudine verrà attivata
+                    automaticamente.
+
+                </div>
+
+
+
+                <div class="habit-edit-actions">
+
+                    <button
+                        type="button"
+                        id="cancel-create-habit"
+                        class="secondary-action"
+                    >
+                        Annulla
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="primary-action"
+                    >
+                        Crea abitudine
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    `;
+
+
+    document.body.appendChild(
+        overlay
+    );
+
+
+    document
+        .getElementById(
+            "close-create-habit"
+        )
+        .addEventListener(
+            "click",
+            closeCreateHabitModal
+        );
+
+
+    document
+        .getElementById(
+            "cancel-create-habit"
+        )
+        .addEventListener(
+            "click",
+            closeCreateHabitModal
+        );
+
+
+    document
+        .getElementById(
+            "create-habit-overlay"
+        )
+        .addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target ===
+                    overlay
+                ) {
+
+                    closeCreateHabitModal();
+
+                }
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "new-habit-type"
+        )
+        .addEventListener(
+            "change",
+            updateCreateHabitFields
+        );
+
+
+    document
+        .getElementById(
+            "create-habit-form"
+        )
+        .addEventListener(
+            "submit",
+            saveNewHabit
+        );
+
+
+    updateCreateHabitFields();
+
+}
+
+
+
+/* =========================================
+   OPEN / CLOSE
+========================================= */
+
+function openCreateHabitModal() {
+
+    const overlay =
+        document.getElementById(
+            "create-habit-overlay"
+        );
+
+
+    if (!overlay) {
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "create-habit-form"
+        )
+        .reset();
+
+
+    document
+        .getElementById(
+            "new-habit-icon"
+        )
+        .value =
+        "⭐";
+
+
+    document
+        .getElementById(
+            "new-habit-target"
+        )
+        .value =
+        "1";
+
+
+    updateCreateHabitFields();
+
+
+    overlay.hidden =
+        false;
+
+}
+
+
+
+function closeCreateHabitModal() {
+
+    const overlay =
+        document.getElementById(
+            "create-habit-overlay"
+        );
+
+
+    if (overlay) {
+
+        overlay.hidden =
+            true;
+
+    }
+
+}
+
+
+
+/* =========================================
+   FORM BEHAVIOUR
+========================================= */
+
+function updateCreateHabitFields() {
+
+    const type =
+        document
+            .getElementById(
+                "new-habit-type"
+            )
+            .value;
+
+
+    const numericFields =
+        document.getElementById(
+            "new-habit-numeric-fields"
+        );
+
+
+    numericFields.hidden =
+        type === "boolean";
+
+}
+
+
+
+/* =========================================
+   CREATE UNIQUE ID
+========================================= */
+
+function createCustomHabitId(
+    name
+) {
+
+    const cleanName =
+        name
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .replace(
+                /[^a-z0-9]+/g,
+                "_"
+            )
+            .replace(
+                /^_+|_+$/g,
+                ""
+            )
+            .slice(
+                0,
+                30
+            );
+
+
+    return `custom_${
+        cleanName || "habit"
+    }_${Date.now()}`;
+
+}
+
+
+
+/* =========================================
+   SAVE NEW HABIT
+========================================= */
+
+function saveNewHabit(
+    event
+) {
+
+    event.preventDefault();
+
+
+    const name =
+        document
+            .getElementById(
+                "new-habit-name"
+            )
+            .value
+            .trim();
+
+
+    if (!name) {
+        return;
+    }
+
+
+    const icon =
+        document
+            .getElementById(
+                "new-habit-icon"
+            )
+            .value
+            .trim() ||
+        "⭐";
+
+
+    const category =
+        document
+            .getElementById(
+                "new-habit-category"
+            )
+            .value;
+
+
+    const frequency =
+        document
+            .getElementById(
+                "new-habit-frequency"
+            )
+            .value;
+
+
+    const type =
+        document
+            .getElementById(
+                "new-habit-type"
+            )
+            .value;
+
+
+    const description =
+        document
+            .getElementById(
+                "new-habit-description"
+            )
+            .value
+            .trim();
+
+
+    const habit = {
+
+        id:
+            createCustomHabitId(
+                name
+            ),
+
+        frequency,
+
+        category,
+
+        name,
+
+        icon,
+
+        type,
+
+        description,
+
+        custom:
+            true
+
+    };
+
+
+    /*
+    Target solo quando necessario.
+    */
+
+    if (
+        type !==
+        "boolean"
+    ) {
+
+        let target =
+            Number(
+                document
+                    .getElementById(
+                        "new-habit-target"
+                    )
+                    .value
+            );
+
+
+        if (
+            !Number.isFinite(
+                target
+            ) ||
+            target < 0
+        ) {
+
+            target = 1;
+
+        }
+
+
+        habit.target =
+            target;
+
+
+        habit.unit =
+            document
+                .getElementById(
+                    "new-habit-unit"
+                )
+                .value
+                .trim();
+
+
+        if (
+            type ===
+            "counter"
+        ) {
+
+            habit.displayTarget =
+                target;
+
+        }
+
+    }
+
+
+    /*
+    Aggiungiamo alla libreria.
+    */
+
+    habitLibrary.push(
+        habit
+    );
+
+
+    /*
+    Salviamo permanentemente.
+    */
+
+    data.settings
+        .customHabits
+        .push(
+            {
+                ...habit
+            }
+        );
+
+
+    /*
+    Rendiamo subito attiva.
+    */
+
+    if (
+        !data.settings
+            .activeHabitIds
+            .includes(
+                habit.id
+            )
+    ) {
+
+        data.settings
+            .activeHabitIds
+            .push(
+                habit.id
+            );
+
+    }
+
+
+    /*
+    La registriamo nei defaults
+    per permettere l'editor.
+    */
+
+    ORIGINAL_HABIT_DEFAULTS[
+        habit.id
+    ] = {
+        ...habit
+    };
+
+
+    /*
+    Se è daily aggiorniamo
+    la configurazione di oggi.
+    */
+
+    if (
+        habit.frequency ===
+        "daily"
+    ) {
+
+        data.daily[
+            todayKey
+        ].__activeIds =
+            activeDailyIds();
+
+    }
+
+
+    saveData();
+
+
+    closeCreateHabitModal();
+
+
+    renderTodayHabits();
+
+    renderHabitLibrary();
+
+    updateScores();
+
+    renderCalendar();
+
+    renderStats();
+
+
+    pageSubtitle.textContent =
+        `${getActiveHabits().length} attive • ${habitLibrary.length} disponibili`;
+
+}
+
+/* =========================================
    HABITS PAGE — LIBRERIA
 ========================================= */
 
@@ -4329,6 +5176,10 @@ function renderStats() {
    START
 ========================================= */
 createEditHabitModal();
+
+createNewHabitModal();
+
+createNewHabitButton();
 
 pageSubtitle.textContent =
     todayLabel();

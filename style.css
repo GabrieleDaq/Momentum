@@ -1419,3 +1419,50 @@ footer {
     }
 
 }
+
+/* =========================
+   MOMENTUM v0.5B
+   CREATE HABIT
+========================= */
+
+.create-habit-button {
+    width: 100%;
+
+    min-height: 48px;
+
+    margin-top: 18px;
+
+    border: 0;
+    border-radius: 14px;
+
+    background: var(--dark);
+    color: white;
+
+    font-size: 13px;
+    font-weight: 750;
+
+    cursor: pointer;
+}
+
+
+.habit-select {
+    width: 100%;
+
+    min-height: 46px;
+
+    padding: 0 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--soft);
+    color: var(--text);
+
+    font-size: 16px;
+}
+
+
+.habit-select:focus {
+    outline: 2px solid var(--dark);
+    outline-offset: 2px;
+}
