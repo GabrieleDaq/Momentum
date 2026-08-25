@@ -1614,3 +1614,305 @@ footer {
     }
 
 }
+
+/* =========================
+   MOMENTUM v0.7
+   STREAK & CONSISTENCY
+========================= */
+
+.streak-section {
+    margin-top: 38px;
+    margin-bottom: 40px;
+}
+
+
+.streak-main-heading {
+    margin-bottom: 14px;
+}
+
+
+.streak-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+
+.streak-stat-card {
+    min-width: 0;
+    min-height: 150px;
+
+    padding: 16px;
+
+    background: var(--card);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 18px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.streak-stat-icon {
+    font-size: 23px;
+
+    margin-bottom: 16px;
+}
+
+
+.streak-stat-card p {
+    color: var(--muted);
+
+    font-size: 12px;
+
+    margin-bottom: 6px;
+}
+
+
+.streak-stat-card strong {
+    font-size: 30px;
+
+    letter-spacing: -1px;
+}
+
+
+.streak-stat-card small {
+    color: var(--muted);
+
+    font-size: 10px;
+
+    margin-top: 3px;
+}
+
+
+.momentum-status-card {
+    display: grid;
+
+    grid-template-columns:
+        48px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 17px;
+
+    margin-bottom: 34px;
+
+    background: var(--dark);
+    color: white;
+
+    border-radius: 19px;
+}
+
+
+.momentum-status-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,0.10);
+
+    font-size: 22px;
+}
+
+
+.momentum-status-card .mini-label {
+    color: #aeb0b6;
+}
+
+
+.momentum-status-card h3 {
+    font-size: 16px;
+
+    margin-top: 3px;
+}
+
+
+.momentum-status-text {
+    margin-top: 4px;
+
+    color: #c6c8cd;
+
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+
+.best-day-box {
+    min-width: 105px;
+
+    text-align: right;
+}
+
+
+.best-day-box span {
+    display: block;
+
+    color: #aeb0b6;
+
+    font-size: 9px;
+
+    margin-bottom: 5px;
+}
+
+
+.best-day-box strong {
+    font-size: 13px;
+}
+
+
+.habit-streak-header {
+    margin-bottom: 12px;
+}
+
+
+.habit-streak-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.habit-streak-row {
+    display: grid;
+
+    grid-template-columns:
+        44px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 66px;
+
+    padding: 11px 13px;
+
+    background: var(--card);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 15px;
+}
+
+
+.habit-streak-icon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--soft);
+
+    border-radius: 12px;
+
+    font-size: 20px;
+}
+
+
+.habit-streak-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.habit-streak-info strong {
+    font-size: 13px;
+}
+
+
+.habit-streak-info span {
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+
+.habit-streak-value {
+    min-width: 54px;
+
+    text-align: right;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.habit-streak-value strong {
+    font-size: 19px;
+}
+
+
+.habit-streak-value span {
+    color: var(--muted);
+
+    font-size: 9px;
+}
+
+
+@media (max-width: 520px) {
+
+    .momentum-status-card {
+        grid-template-columns:
+            44px
+            minmax(0, 1fr);
+
+        align-items: start;
+    }
+
+
+    .momentum-status-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+
+    .best-day-box {
+        grid-column:
+            1 / -1;
+
+        padding-top: 12px;
+
+        border-top:
+            1px solid
+            rgba(255,255,255,0.12);
+
+        text-align: left;
+    }
+
+
+    .best-day-box span {
+        display: inline;
+
+        margin-right: 7px;
+    }
+
+}

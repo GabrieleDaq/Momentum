@@ -5168,7 +5168,9 @@ function renderStats() {
             )} / 4`
             : "Disattivato";
 
-}
+            renderGamification();
+
+        }
 
 /* =========================================
    BACKUP & RESTORE — v0.6
@@ -5785,6 +5787,1182 @@ function importMomentumBackup(
 }
 
 /* =========================================
+   STREAK & CONSISTENCY — v0.7
+========================================= */
+
+const SUCCESS_DAY_THRESHOLD = 80;
+
+
+/* =========================================
+   DATE HELPERS
+========================================= */
+
+function addDaysToDate(
+    date,
+    amount
+) {
+
+    const copy =
+        new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+        );
+
+
+    copy.setDate(
+        copy.getDate() +
+        amount
+    );
+
+
+    return copy;
+
+}
+
+
+function daysBetween(
+    firstDate,
+    secondDate
+) {
+
+    const first =
+        Date.UTC(
+            firstDate.getFullYear(),
+            firstDate.getMonth(),
+            firstDate.getDate()
+        );
+
+
+    const second =
+        Date.UTC(
+            secondDate.getFullYear(),
+            secondDate.getMonth(),
+            secondDate.getDate()
+        );
+
+
+    return Math.round(
+        (
+            second -
+            first
+        ) /
+        86400000
+    );
+
+}
+
+
+/* =========================================
+   SUCCESSFUL DAY
+========================================= */
+
+function isSuccessfulDay(
+    dateKey
+) {
+
+    const score =
+        calculateDailyScoreForKey(
+            dateKey
+        );
+
+
+    return (
+        score !== null &&
+        score >=
+            SUCCESS_DAY_THRESHOLD
+    );
+
+}
+
+
+/* =========================================
+   CURRENT GENERAL STREAK
+========================================= */
+
+function getCurrentStreak() {
+
+    let cursor =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+
+    /*
+    Se oggi non è ancora arrivato all'80%,
+    non rompiamo lo streak mentre
+    la giornata è ancora in corso.
+
+    Partiamo quindi da ieri.
+    */
+
+    if (
+        !isSuccessfulDay(
+            todayKey
+        )
+    ) {
+
+        cursor =
+            addDaysToDate(
+                cursor,
+                -1
+            );
+
+    }
+
+
+    let streak = 0;
+
+
+    while (true) {
+
+        const key =
+            formatDateKey(
+                cursor
+            );
+
+
+        if (
+            !isSuccessfulDay(
+                key
+            )
+        ) {
+
+            break;
+
+        }
+
+
+        streak++;
+
+
+        cursor =
+            addDaysToDate(
+                cursor,
+                -1
+            );
+
+    }
+
+
+    return streak;
+
+}
+
+
+/* =========================================
+   RECORD GENERAL STREAK
+========================================= */
+
+function getRecordStreak() {
+
+    const successfulKeys =
+        trackedDailyKeys()
+            .filter(
+                isSuccessfulDay
+            );
+
+
+    if (
+        successfulKeys.length ===
+        0
+    ) {
+
+        return 0;
+
+    }
+
+
+    let record = 1;
+    let current = 1;
+
+
+    for (
+        let i = 1;
+        i < successfulKeys.length;
+        i++
+    ) {
+
+        const previous =
+            parseDateKey(
+                successfulKeys[
+                    i - 1
+                ]
+            );
+
+
+        const currentDate =
+            parseDateKey(
+                successfulKeys[
+                    i
+                ]
+            );
+
+
+        if (
+            daysBetween(
+                previous,
+                currentDate
+            ) === 1
+        ) {
+
+            current++;
+
+        }
+        else {
+
+            current = 1;
+
+        }
+
+
+        record =
+            Math.max(
+                record,
+                current
+            );
+
+    }
+
+
+    return record;
+
+}
+
+
+/* =========================================
+   FIRST TRACKED DAY
+========================================= */
+
+function getFirstTrackedDate() {
+
+    const keys =
+        trackedDailyKeys();
+
+
+    if (
+        keys.length ===
+        0
+    ) {
+
+        return null;
+
+    }
+
+
+    return parseDateKey(
+        keys[0]
+    );
+
+}
+
+
+/* =========================================
+   CONSISTENCY RATE
+========================================= */
+
+function getConsistencyRate(
+    days
+) {
+
+    const firstTracked =
+        getFirstTrackedDate();
+
+
+    if (
+        !firstTracked
+    ) {
+
+        return null;
+
+    }
+
+
+    const today =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+
+    const requestedStart =
+        addDaysToDate(
+            today,
+            -(days - 1)
+        );
+
+
+    const effectiveStart =
+        firstTracked >
+        requestedStart
+            ? firstTracked
+            : requestedStart;
+
+
+    const denominator =
+        daysBetween(
+            effectiveStart,
+            today
+        ) + 1;
+
+
+    if (
+        denominator <= 0
+    ) {
+
+        return null;
+
+    }
+
+
+    let successfulDays = 0;
+
+
+    let cursor =
+        new Date(
+            effectiveStart
+        );
+
+
+    while (
+        cursor <= today
+    ) {
+
+        const key =
+            formatDateKey(
+                cursor
+            );
+
+
+        if (
+            isSuccessfulDay(
+                key
+            )
+        ) {
+
+            successfulDays++;
+
+        }
+
+
+        cursor =
+            addDaysToDate(
+                cursor,
+                1
+            );
+
+    }
+
+
+    return Math.round(
+        (
+            successfulDays /
+            denominator
+        ) * 100
+    );
+
+}
+
+
+/* =========================================
+   SUCCESSFUL DAYS IN WINDOW
+========================================= */
+
+function getSuccessfulDays(
+    days
+) {
+
+    const keys =
+        keysWithinLastDays(
+            days
+        );
+
+
+    return keys.filter(
+        isSuccessfulDay
+    ).length;
+
+}
+
+
+/* =========================================
+   BEST RECENT DAY
+========================================= */
+
+function getBestRecentDay(
+    days
+) {
+
+    const keys =
+        keysWithinLastDays(
+            days
+        );
+
+
+    let best = null;
+
+
+    keys.forEach(
+        key => {
+
+            const score =
+                calculateDailyScoreForKey(
+                    key
+                );
+
+
+            if (
+                score === null
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                !best ||
+                score >
+                best.score
+            ) {
+
+                best = {
+                    key,
+                    score
+                };
+
+            }
+
+        }
+    );
+
+
+    return best;
+
+}
+
+
+/* =========================================
+   HISTORICAL HABIT ACTIVE
+========================================= */
+
+function wasHabitActiveOnDate(
+    habit,
+    dateKey
+) {
+
+    const dayData =
+        data.daily[
+            dateKey
+        ];
+
+
+    if (
+        !dayData
+    ) {
+
+        return false;
+
+    }
+
+
+    const activeIds =
+        Array.isArray(
+            dayData.__activeIds
+        )
+            ? dayData.__activeIds
+            : DEFAULT_DAILY_ACTIVE_IDS;
+
+
+    return activeIds.includes(
+        habit.id
+    );
+
+}
+
+
+/* =========================================
+   HISTORICAL HABIT COMPLETION
+========================================= */
+
+function wasHabitCompletedOnDate(
+    habit,
+    dateKey
+) {
+
+    if (
+        !wasHabitActiveOnDate(
+            habit,
+            dateKey
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    const value =
+        getHistoricalHabitValue(
+            habit,
+            dateKey
+        );
+
+
+    return isCompletedFromValue(
+        habit,
+        value
+    );
+
+}
+
+
+/* =========================================
+   SINGLE HABIT CURRENT STREAK
+========================================= */
+
+function getHabitCurrentStreak(
+    habit
+) {
+
+    let cursor =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+
+    /*
+    Come per lo streak generale,
+    se oggi non è ancora completata
+    lasciamo vivo lo streak di ieri.
+    */
+
+    if (
+        !wasHabitCompletedOnDate(
+            habit,
+            todayKey
+        )
+    ) {
+
+        cursor =
+            addDaysToDate(
+                cursor,
+                -1
+            );
+
+    }
+
+
+    let streak = 0;
+
+
+    while (true) {
+
+        const key =
+            formatDateKey(
+                cursor
+            );
+
+
+        if (
+            !wasHabitCompletedOnDate(
+                habit,
+                key
+            )
+        ) {
+
+            break;
+
+        }
+
+
+        streak++;
+
+
+        cursor =
+            addDaysToDate(
+                cursor,
+                -1
+            );
+
+    }
+
+
+    return streak;
+
+}
+
+
+/* =========================================
+   MOMENTUM STATUS
+========================================= */
+
+function getMomentumStatus(
+    consistency,
+    streak
+) {
+
+    if (
+        consistency === null
+    ) {
+
+        return {
+            title:
+                "Inizia a costruire dati",
+            text:
+                "Registra alcune giornate per vedere la tua costanza."
+        };
+
+    }
+
+
+    if (
+        consistency >= 85 &&
+        streak >= 7
+    ) {
+
+        return {
+            title:
+                "Costanza eccellente",
+            text:
+                "Stai mantenendo un ritmo molto solido."
+        };
+
+    }
+
+
+    if (
+        consistency >= 70
+    ) {
+
+        return {
+            title:
+                "Ottimo Momentum",
+            text:
+                "La routine sta diventando consistente."
+        };
+
+    }
+
+
+    if (
+        consistency >= 50
+    ) {
+
+        return {
+            title:
+                "Buon ritmo",
+            text:
+                "La base c'è. Punta soprattutto alla continuità."
+        };
+
+    }
+
+
+    return {
+        title:
+            "Momentum in costruzione",
+        text:
+            "Concentrati su poche giornate buone consecutive."
+    };
+
+}
+
+
+/* =========================================
+   CREATE STREAK UI
+========================================= */
+
+function createStreakSection() {
+
+    if (
+        document.getElementById(
+            "momentum-streak-section"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const statsPage =
+        document.getElementById(
+            "page-stats"
+        );
+
+
+    if (!statsPage) {
+        return;
+    }
+
+
+    const section =
+        document.createElement(
+            "section"
+        );
+
+
+    section.id =
+        "momentum-streak-section";
+
+
+    section.className =
+        "streak-section";
+
+
+    section.innerHTML = `
+
+        <div class="section-heading streak-main-heading">
+
+            <div>
+
+                <p class="section-label">
+                    🔥 MOMENTUM
+                </p>
+
+                <h2>
+                    Costanza
+                </h2>
+
+            </div>
+
+
+            <span class="section-frequency">
+                Giorno riuscito ≥ ${SUCCESS_DAY_THRESHOLD}%
+            </span>
+
+        </div>
+
+
+        <div class="streak-grid">
+
+            <article class="streak-stat-card">
+
+                <span class="streak-stat-icon">
+                    🔥
+                </span>
+
+                <p>
+                    Streak attuale
+                </p>
+
+                <strong id="current-streak">
+                    0
+                </strong>
+
+                <small>
+                    giorni
+                </small>
+
+            </article>
+
+
+            <article class="streak-stat-card">
+
+                <span class="streak-stat-icon">
+                    🏆
+                </span>
+
+                <p>
+                    Record
+                </p>
+
+                <strong id="record-streak">
+                    0
+                </strong>
+
+                <small>
+                    giorni
+                </small>
+
+            </article>
+
+
+            <article class="streak-stat-card">
+
+                <span class="streak-stat-icon">
+                    🎯
+                </span>
+
+                <p>
+                    Consistency 7g
+                </p>
+
+                <strong id="consistency-7">
+                    —
+                </strong>
+
+                <small>
+                    giorni ≥80%
+                </small>
+
+            </article>
+
+
+            <article class="streak-stat-card">
+
+                <span class="streak-stat-icon">
+                    ⭐
+                </span>
+
+                <p>
+                    Giorni riusciti 30g
+                </p>
+
+                <strong id="successful-days-30">
+                    —
+                </strong>
+
+                <small>
+                    ultimi 30 giorni
+                </small>
+
+            </article>
+
+        </div>
+
+
+        <article class="momentum-status-card">
+
+            <div class="momentum-status-icon">
+                ⚡
+            </div>
+
+            <div>
+
+                <p class="mini-label">
+                    MOMENTUM STATUS
+                </p>
+
+                <h3 id="momentum-status-title">
+                    —
+                </h3>
+
+                <p
+                    id="momentum-status-text"
+                    class="momentum-status-text"
+                >
+                    —
+                </p>
+
+            </div>
+
+            <div class="best-day-box">
+
+                <span>
+                    Miglior giorno 30g
+                </span>
+
+                <strong id="best-recent-day">
+                    —
+                </strong>
+
+            </div>
+
+        </article>
+
+
+        <div class="habit-streak-header">
+
+            <div>
+
+                <p class="mini-label">
+                    DAILY HABITS
+                </p>
+
+                <h2>
+                    Streak per abitudine
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="habit-streak-list"
+            class="habit-streak-list"
+        ></div>
+
+    `;
+
+
+    statsPage.appendChild(
+        section
+    );
+
+}
+
+
+/* =========================================
+   RENDER STREAKS
+========================================= */
+
+function renderGamification() {
+
+    const section =
+        document.getElementById(
+            "momentum-streak-section"
+        );
+
+
+    if (!section) {
+        return;
+    }
+
+
+    const currentStreak =
+        getCurrentStreak();
+
+
+    const recordStreak =
+        getRecordStreak();
+
+
+    const consistency7 =
+        getConsistencyRate(
+            7
+        );
+
+
+    const successful30 =
+        getSuccessfulDays(
+            30
+        );
+
+
+    document
+        .getElementById(
+            "current-streak"
+        )
+        .textContent =
+        currentStreak;
+
+
+    document
+        .getElementById(
+            "record-streak"
+        )
+        .textContent =
+        recordStreak;
+
+
+    document
+        .getElementById(
+            "consistency-7"
+        )
+        .textContent =
+        consistency7 === null
+            ? "—"
+            : `${consistency7}%`;
+
+
+    document
+        .getElementById(
+            "successful-days-30"
+        )
+        .textContent =
+        successful30;
+
+
+    const status =
+        getMomentumStatus(
+            consistency7,
+            currentStreak
+        );
+
+
+    document
+        .getElementById(
+            "momentum-status-title"
+        )
+        .textContent =
+        status.title;
+
+
+    document
+        .getElementById(
+            "momentum-status-text"
+        )
+        .textContent =
+        status.text;
+
+
+    const best =
+        getBestRecentDay(
+            30
+        );
+
+
+    const bestElement =
+        document.getElementById(
+            "best-recent-day"
+        );
+
+
+    if (!best) {
+
+        bestElement.textContent =
+            "—";
+
+    }
+    else {
+
+        const bestDate =
+            parseDateKey(
+                best.key
+            );
+
+
+        const dateLabel =
+            bestDate
+                .toLocaleDateString(
+                    "it-IT",
+                    {
+                        day: "numeric",
+                        month: "short"
+                    }
+                );
+
+
+        bestElement.textContent =
+            `${best.score}% • ${dateLabel}`;
+
+    }
+
+
+    renderHabitStreaks();
+
+}
+
+
+/* =========================================
+   HABIT STREAK LIST
+========================================= */
+
+function renderHabitStreaks() {
+
+    const container =
+        document.getElementById(
+            "habit-streak-list"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    const dailyHabits =
+        activeHabitsByFrequency(
+            "daily"
+        );
+
+
+    if (
+        dailyHabits.length ===
+        0
+    ) {
+
+        container.innerHTML =
+            `
+                <div class="empty-state">
+                    Nessuna Daily habit attiva.
+                </div>
+            `;
+
+        return;
+
+    }
+
+
+    dailyHabits
+        .map(
+            habit => ({
+                habit,
+                streak:
+                    getHabitCurrentStreak(
+                        habit
+                    )
+            })
+        )
+        .sort(
+            (a, b) =>
+                b.streak -
+                a.streak
+        )
+        .forEach(
+            item => {
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                row.className =
+                    "habit-streak-row";
+
+
+                row.innerHTML = `
+
+                    <div class="habit-streak-icon">
+                        ${item.habit.icon}
+                    </div>
+
+
+                    <div class="habit-streak-info">
+
+                        <strong>
+                            ${item.habit.name}
+                        </strong>
+
+                        <span>
+                            Streak attuale
+                        </span>
+
+                    </div>
+
+
+                    <div class="habit-streak-value">
+
+                        <strong>
+                            ${item.streak}
+                        </strong>
+
+                        <span>
+                            ${
+                                item.streak === 1
+                                    ? "giorno"
+                                    : "giorni"
+                            }
+                        </span>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    row
+                );
+
+            }
+        );
+
+}
+
+/* =========================================
    START
 ========================================= */
 createEditHabitModal();
@@ -5794,6 +6972,8 @@ createNewHabitModal();
 createNewHabitButton();
 
 createBackupSection();
+
+createStreakSection();
 
 pageSubtitle.textContent =
     todayLabel();
